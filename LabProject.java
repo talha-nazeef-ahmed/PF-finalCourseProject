@@ -1,0 +1,277 @@
+import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class LabProject {
+    final static int INITIAL_CAPACITY = 1000;
+    static String[] messages;
+    static String[] types;
+    static String[] sources;
+    static String[] categories;
+    static String[] timestamps;
+    static int[] severities;
+    static int logCount = 0;
+    static String sessionStartTime;
+    static Scanner input = new Scanner(System.in);
+
+    public static void main (String [] args){
+        sessionStartTime = generateTimestamp();
+        initializeSystem();
+        displayWelcomeBanner();
+        mainMenuLoop();
+        System.out.println("Program ended successfully!");
+    }
+
+    public static void displayWelcomeBanner(){
+        System.out.println("*******************************************");
+        System.out.println("***     LOG MANAGEMENT SYSTEM v1.0      ***");
+        System.out.println("*******************************************");
+        System.out.println();
+        System.out.printf("Session Started: %s\n", generateTimestamp());
+        System.out.println("Authors: Talha Nazeef Ahmed & Nishat Mehdi");
+        System.out.println();
+        System.out.println("===========================================");
+        System.out.println("           WELCOME TO THE SYSTEM           ");
+        System.out.println("===========================================");
+        System.out.println();
+        System.out.println("system initialized");
+        System.out.println("ready to manage logs");
+        System.out.println();
+        pauseAndContinue();
+    }
+
+    public static void initializeSystem(){
+        System.out.println("Initializing system...");
+        messages = new String[INITIAL_CAPACITY];
+        types = new String[INITIAL_CAPACITY];
+        sources = new String[INITIAL_CAPACITY];
+        categories = new String[INITIAL_CAPACITY];
+        timestamps = new String[INITIAL_CAPACITY];
+        severities = new int[INITIAL_CAPACITY];
+        System.out.println("arrays allocated (capacity = " + INITIAL_CAPACITY + ")");
+        System.out.println("log counter initialized");
+        System.out.println();
+    }
+
+    public static void pauseAndContinue(){
+        System.out.println("Press Enter to continue...");
+        input.nextLine();
+        System.out.println();
+    }
+
+    public static String generateTimestamp(){
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy || HH:mm");
+        return LocalDateTime.now().format(format);
+    }
+
+    public static void mainMenuLoop(){
+        while (true){
+            System.out.println("=======================================");
+            System.out.println("               MAIN MENU               ");
+            System.out.println("=======================================");
+            System.out.printf("Current Session: %s | Logs: %d\n", generateTimestamp(), logCount);
+            System.out.println();
+            System.out.println("1. Add New Log Entry");
+            System.out.println("2. View All Logs");
+            System.out.println("3. Search Logs");
+            System.out.println("4. Delete Logs");
+            System.out.println("5. Edit Existing Log");
+            System.out.println("6. Statistics Dashboard");
+            System.out.println("7. Trend Analysis");
+            System.out.println("8. Find Anomalies");
+            System.out.println("9. Sort Logs");
+            System.out.println("10. Filter Logs");
+            System.out.println("11. Backup System");
+            System.out.println("12. Restore Backup");
+            System.out.println("13. Compare Backups");
+            System.out.println("14. System Diagnostics");
+            System.out.println("15. Help & Documentation");
+            System.out.println("0. Exit");
+            System.out.println();
+            int choice = getMenuChoice();
+            if (choice == 0) {
+                shutdownSystem();
+                break;
+            }
+            switch (choice){
+                case 1 -> addLog();
+                case 2 -> { System.out.println(">>> View Logs - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 3 -> { System.out.println(">>> Search Logs - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 4 -> { System.out.println(">>> Delete Logs - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 5 -> { System.out.println(">>> Edit Logs - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 6 -> { System.out.println(">>> Statistics - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 7 -> { System.out.println(">>> Trends - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 8 -> { System.out.println(">>> Find Anomalies - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 9 -> { System.out.println(">>> Sort Logs - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 10 -> { System.out.println(">>> Filter Logs - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 11 -> { System.out.println(">>> Backup System - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 12 -> { System.out.println(">>> Restore Backup - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 13 -> {System.out.println(">>> Compare Backups - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 14 -> { System.out.println(">>> Diagnostics - Coming soon!");
+                    pauseAndContinue();
+                }
+                case 15 -> { System.out.println(">>> Help - Coming soon!");
+                    pauseAndContinue();
+                }
+                default -> { System.out.println("ERROR: Invalid choice! Please Enter 0-15");
+                    pauseAndContinue();
+                }
+            }
+        }
+    }
+
+    public static int getMenuChoice(){
+        int choice = -1;
+        while (choice < 0){
+            System.out.print("Enter your choice (0-15): ");
+            String userInput = input.nextLine();
+            try {
+                choice = Integer.parseInt(userInput);
+                if (choice < 0 || choice > 15) {
+                    System.out.println("Please Enter a number between 0 and 15");
+                    choice = -1;
+                }
+            }
+            catch (NumberFormatException e) {
+                System.out.println("Invalid Input! Please Enter a valid number");
+                choice = -1;
+            }
+        }
+        return choice;
+    }
+
+    public static void shutdownSystem(){
+        String sessionEndTime = generateTimestamp();
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("            SESSION SUMMARY               ");
+        System.out.println("==========================================");
+        System.out.printf("Session Started: %s\n", sessionStartTime);
+        System.out.printf("Session Ended: %s\n", sessionEndTime);
+        System.out.println("Duration: Coming soon...");
+        System.out.println();
+        System.out.printf("Logs in System: %d\n", logCount);
+        System.out.println("------------------------------------------");
+        System.out.println();
+        System.out.println("Thank you for using Log Management System!");
+        System.out.println("Goodbye, Talha Nazeef Ahmed & Nishat Mehdi!");
+        System.out.println("------------------------------------------");
+        System.out.println();
+    }
+
+    public static void addLog(){
+        System.out.println("==========================================");
+        System.out.println("           ADDING NEW LOG ENTRY           ");
+        System.out.println("==========================================");
+        System.out.println();
+        String message = inputMessage();
+        String type = inputType();
+        System.out.println("Step 3/5: Enter severity (1-5, where 5 is most critical)");
+        System.out.print("->");
+        int severity = Integer.parseInt(input.nextLine());
+        System.out.println("Step 4/5: Enter source type");
+        System.out.print("->");
+        String source = input.nextLine();
+        System.out.println("Step 5/5: Enter category");
+        System.out.print("->");
+        String category = input.nextLine();
+        System.out.println();
+        System.out.println("------------------------------------------");
+        System.out.println("           REVIEW BEFORE SAVING           ");
+        System.out.println("------------------------------------------");
+        System.out.printf("Timestamp: %s\n", generateTimestamp());
+        System.out.printf("Type: %s\n", type);
+        System.out.printf("Severity: %d\n", severity);
+        System.out.printf("Source: %s\n", source);
+        System.out.printf("Category: %s\n", category);
+        System.out.printf("Message: %s\n", message);
+        System.out.println();
+        System.out.println("Save this log? (Y/N)");
+        String confirmation = input.nextLine().toUpperCase();
+        if(confirmation.equals("Y")){
+            messages[logCount] = message;
+            types[logCount] = type;
+            severities[logCount] = severity;
+            sources[logCount] = source;
+            categories[logCount] = category;
+            timestamps[logCount] = generateTimestamp();
+            logCount++;
+            System.out.println("Log Saved Successfully!");
+            System.out.printf("-> Log ID: #%04d\n", logCount);
+            System.out.printf("-> Total Logs: %d\n", logCount);
+            pauseAndContinue();
+        }
+        else{
+            System.out.println("Log not saved!");
+            pauseAndContinue();
+        }
+    }
+
+    public static String inputMessage(){
+        String message = "";
+        while(message.length() < 10){
+            System.out.println("Step 1/5: Enter log message");
+            System.out.println("(Must be 10-500 characters)");
+            System.out.print("->");
+            message = input.nextLine().trim();
+            if (message.isEmpty())
+                System.out.println("Message cannot be empty!");
+            else if (message.length() < 10)
+                System.out.println("Message too short! minimum length 10 characters");
+            else if (message.length() > 500) {
+                System.out.println("Message too long! maximum length 500 characters");
+                message = "";
+            }
+        }
+        System.out.printf("Message accepted (%d characters)\n", message.length());
+        return message;
+    }
+
+    public static String inputType(){
+        String type = "";
+        while (type.isEmpty()){
+            System.out.println("Step 2/5: Select log type");
+            System.out.println("1. Info (General Information)");
+            System.out.println("2. Warning (Potential issue)");
+            System.out.println("3. Error (Something failed)");
+            System.out.println("4. Critical (Immediate attention needed)");
+            System.out.println("5. Debug (Development info)");
+            System.out.print("->");
+            String choice = input.nextLine().toUpperCase();
+            switch (choice) {
+                case "1", "INFO" -> type = "INFO";
+                case "2", "WARNING" -> type = "WARNING";
+                case "3", "ERROR" -> type = "ERROR";
+                case "4", "CRITICAL" -> type = "CRITICAL";
+                case "5", "DEBUG" -> type = "DEBUG";
+                default -> System.out.println("Invalid type! choose 1-5 or name");
+            }
+        }
+        System.out.printf("Type set to %s\n", type);
+        return type;
+    }
+}
