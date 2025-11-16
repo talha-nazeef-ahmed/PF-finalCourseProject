@@ -190,12 +190,8 @@ public class LabProject {
         System.out.println();
         String message = inputMessage();
         String type = inputType();
-        System.out.println("Step 3/5: Enter severity (1-5, where 5 is most critical)");
-        System.out.print("->");
-        int severity = Integer.parseInt(input.nextLine());
-        System.out.println("Step 4/5: Enter source type");
-        System.out.print("->");
-        String source = input.nextLine();
+        int severity = determineSeverity(type);
+        String source = identifySource();
         System.out.println("Step 5/5: Enter category");
         System.out.print("->");
         String category = input.nextLine();
@@ -236,7 +232,7 @@ public class LabProject {
         while(message.length() < 10){
             System.out.println("Step 1/5: Enter log message");
             System.out.println("(Must be 10-500 characters)");
-            System.out.print("->");
+            System.out.print("-> ");
             message = input.nextLine().trim();
             if (message.isEmpty())
                 System.out.println("Message cannot be empty!");
@@ -260,7 +256,7 @@ public class LabProject {
             System.out.println("3. Error (Something failed)");
             System.out.println("4. Critical (Immediate attention needed)");
             System.out.println("5. Debug (Development info)");
-            System.out.print("->");
+            System.out.print("-> ");
             String choice = input.nextLine().toUpperCase();
             switch (choice) {
                 case "1", "INFO" -> type = "INFO";
@@ -273,5 +269,63 @@ public class LabProject {
         }
         System.out.printf("Type set to %s\n", type);
         return type;
+    }
+
+    public static int determineSeverity(String type){
+        int severity;
+        switch (type) {
+            case "CRITICAL" -> severity = 5;
+            case "ERROR" -> severity = 3;
+            case "WARNING" -> severity = 2;
+            default -> severity = 1;
+        }
+        System.out.printf("Step 3/5: Auto-assigned severity: %d (based on %s)\n", severity, type);
+        while (true) {
+            System.out.println("Do you want to override (Y/N)?");
+            System.out.print("-> ");
+            String choice = input.nextLine().trim().toUpperCase();
+            if ((!choice.equals("N")) && (!choice.equals("Y")))
+                System.out.println("Enter a valid value as y or n");
+            else if (choice.equals("Y")) {
+                while (true) {
+                    System.out.print("Write the value for the severity (1-5): ");
+                    String userInput = input.nextLine().trim();
+                    try {
+                        severity = Integer.parseInt(userInput);
+                        if (severity >= 1 && severity <= 5)
+                            break;
+                        else
+                            System.out.println("Enter a value between 1 to 5");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Enter a valid number");
+                    }
+                }
+                System.out.printf("Severity set to %d\n", severity);
+                break;
+            }
+            else
+                break;
+        }
+        return severity;
+    }
+
+    public static String identifySource(){
+        String source = "";
+        do {
+            System.out.println("Step 4/5: Select Source System");
+            System.out.println("1. Authentication Server\n2. Database Server\n3. Web Server\n4. API Gateway\n5. Network Monitor\n6. File System");
+            String choice = input.nextLine().trim().toUpperCase();
+            switch (choice) {
+                case "1", "AUTHENTICATION SERVER" -> source = "Authentication Server";
+                case "2", "DATABASE SERVER" -> source = "Database Server";
+                case "3", "WEB SERVER" -> source = "Web Server";
+                case "4", "API GATEWAY" -> source = "API Gateway";
+                case "5", "NETWORK MONITOR" -> source = "Network Monitor";
+                case "6", "FILE SYSTEM" -> source = "File System";
+                default -> System.out.println("Enter a valid choice (1-6) or the name");
+            }
+        } while (source.isEmpty());
+        System.out.printf("Source set to %s\n", source);
+        return source;
     }
 }
