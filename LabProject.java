@@ -209,15 +209,9 @@ public class LabProject {
         System.out.println("Save this log? (Y/N)");
         String confirmation = input.nextLine().toUpperCase();
         if(confirmation.equals("Y")){
-            messages[logCount] = message;
-            types[logCount] = type;
-            severities[logCount] = severity;
-            sources[logCount] = source;
-            categories[logCount] = category;
-            timestamps[logCount] = generateTimestamp();
-            logCount++;
+            int logID = saveLogToArrays(message, type, severity, source, category);
             System.out.println("Log Saved Successfully!");
-            System.out.printf("-> Log ID: #%04d\n", logCount);
+            System.out.printf("-> Log ID: #%04d\n", logID);
             System.out.printf("-> Total Logs: %d\n", logCount);
             pauseAndContinue();
         }
@@ -327,5 +321,16 @@ public class LabProject {
         } while (source.isEmpty());
         System.out.printf("Source set to %s\n", source);
         return source;
+    }
+
+    public static int saveLogToArrays(String message, String type, int severity, String source, String category){
+        messages[logCount] = message;
+        types[logCount] = type;
+        severities[logCount] = severity;
+        sources[logCount] = source;
+        categories[logCount] = category;
+        timestamps[logCount] = generateTimestamp();
+        logCount++;
+        return logCount;
     }
 }
