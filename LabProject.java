@@ -95,9 +95,7 @@ public class LabProject {
             }
             switch (choice){
                 case 1 -> addLog();
-                case 2 -> { System.out.println(">>> View Logs - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 2 -> viewAllLogs();
                 case 3 -> { System.out.println(">>> Search Logs - Coming soon!");
                     pauseAndContinue();
                 }
@@ -332,5 +330,34 @@ public class LabProject {
         timestamps[logCount] = generateTimestamp();
         logCount++;
         return logCount;
+    }
+
+    public static void viewAllLogs(){
+        if (logCount == 0)
+            System.out.println("No logs in the system yet! Add some logs first");
+        else {
+            System.out.println("======================================");
+            System.out.println("            ALL SYSTEM LOGS           ");
+            System.out.println("======================================");
+            System.out.printf("Total logs: %d\n", logCount);
+            for(int i = 0; i < logCount; i++){
+                formatLogEntry(i);
+            }
+        }
+        pauseAndContinue();
+    }
+
+    public static void formatLogEntry(int index){
+        System.out.println("------------------------------------------");
+        System.out.printf("| Log ID: #%04d\n", index + 1);
+        System.out.println("------------------------------------------");
+        System.out.printf("| Timestamp: %s\n", timestamps[index]);
+        System.out.printf("| Type: %s\n", types[index]);
+        System.out.printf("| Severity: %d\n", severities[index]);
+        System.out.printf("| Source: %s\n", sources[index]);
+        System.out.printf("| Category: %s\n", categories[index]);
+        System.out.printf("| Message: %s\n", messages[index]);
+        System.out.println("------------------------------------------");
+        System.out.println();
     }
 }
