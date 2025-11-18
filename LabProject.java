@@ -190,9 +190,9 @@ public class LabProject {
         String type = inputType();
         int severity = determineSeverity(type);
         String source = identifySource();
-        System.out.println("Step 5/5: Enter category");
-        System.out.print("->");
-        String category = input.nextLine();
+        //System.out.println("Step 5/5: Enter category");
+        //System.out.print("->");
+        String category = assignCategory();
         System.out.println();
         System.out.println("------------------------------------------");
         System.out.println("           REVIEW BEFORE SAVING           ");
@@ -319,6 +319,35 @@ public class LabProject {
         } while (source.isEmpty());
         System.out.printf("Source set to %s\n", source);
         return source;
+    }
+
+    public static String assignCategory(){
+        System.out.println("Step5/5, Add Category ");
+        System.out.println(" 1. Security\n 2. Performance\n 3. Network\n 4. Application\n 5. Database ");
+        System.out.println("Enter Your Choice: 1-5 ");
+        int userChoice = input.nextInt();
+        input.nextLine(); // consume newline
+        while(true){
+            if (userChoice>=1 && userChoice<=5){
+                break;
+            }
+            else{
+                System.out.print("Invalid Choice, Enter between 1 and 5 ");
+                userChoice = input.nextInt();
+                input.nextLine(); // consume newline
+            }
+        }
+        String returnStr = "";
+        switch(userChoice){
+            case 1: returnStr = "Security"; break;
+            case 2: returnStr = "Performance"; break;
+            case 3: returnStr = "Network"; break;
+            case 4: returnStr = "Application"; break;
+            case 5: returnStr = "Database"; break;
+            default: returnStr = "Uncategorized"; break;
+        }
+        System.out.printf("Category set to %s\n", returnStr);
+        return returnStr;
     }
 
     public static int saveLogToArrays(String message, String type, int severity, String source, String category){
