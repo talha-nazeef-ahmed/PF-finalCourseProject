@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -93,8 +94,8 @@ public class LabProject {
             switch (choice){
                 case 1 -> addLog();
                 case 2 -> viewAllLogs();
-                case 3 -> { System.out.println(">>> Search Logs - Coming soon!");
-                    pauseAndContinue();
+                case 3 -> { searchByKeyword();;
+                    
                 }
                 case 4 -> { System.out.println(">>> Delete Logs - Coming soon!");
                     pauseAndContinue();
@@ -383,6 +384,31 @@ public class LabProject {
         System.out.println("------------------------------------------");
         System.out.println();
     }
+
+    public static void searchByKeyword(){
+        System.out.println("------------------------------------------");
+        System.out.println("           SEARCH LOGS BY KEYWORD        ");
+        System.out.println("------------------------------------------");
+        System.out.print("Enter keyword to search: ");   
+        String keyword = input.nextLine().trim();
+        System.out.println("Searching for "+ keyword +"... ");
+        keyword = keyword.toLowerCase();
+        int[] matchIndices = new int[logCount];
+        int matchCount=0;
+        if(!keyword.isEmpty()){
+            for(int i=0; i<logCount; i++){
+                if(logs[i][MESSAGE].toLowerCase().contains(keyword)){
+                    matchIndices[matchCount] = i;
+                    matchCount++;
+                }
+            }        
+            displaySearchResults(matchIndices, matchCount);
+        }else{
+            System.out.println("No keyword entered. Search halted.");
+            pauseAndContinue();
+        } 
+    }
+    
 
     public static void displaySearchResults(int[] matchIndices, int matchCount){
         if (matchCount == 0)
