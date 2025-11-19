@@ -4,12 +4,14 @@ import java.time.format.DateTimeFormatter;
 
 public class LabProject {
     final static int INITIAL_CAPACITY = 1000;
-    static String[] messages;
-    static String[] types;
-    static String[] sources;
-    static String[] categories;
-    static String[] timestamps;
-    static int[] severities;
+    final static int LOG_FIELDS = 6;
+    final static int MESSAGE = 0;
+    final static int TYPE = 1;
+    final static int SEVERITY = 2;
+    final static int SOURCE = 3;
+    final static int CATEGORY = 4;
+    final static int TIMESTAMP = 5;
+    static String[][] logs;
     static int logCount = 0;
     static String sessionStartTime;
     static Scanner input = new Scanner(System.in);
@@ -42,13 +44,8 @@ public class LabProject {
 
     public static void initializeSystem(){
         System.out.println("Initializing system...");
-        messages = new String[INITIAL_CAPACITY];
-        types = new String[INITIAL_CAPACITY];
-        sources = new String[INITIAL_CAPACITY];
-        categories = new String[INITIAL_CAPACITY];
-        timestamps = new String[INITIAL_CAPACITY];
-        severities = new int[INITIAL_CAPACITY];
-        System.out.println("arrays allocated (capacity = " + INITIAL_CAPACITY + ")");
+        logs = new String[INITIAL_CAPACITY][LOG_FIELDS];
+        System.out.printf("2D array allocated (capacity =  %d logs, %d fields\n)", INITIAL_CAPACITY, LOG_FIELDS);
         System.out.println("log counter initialized");
         System.out.println();
     }
@@ -190,8 +187,6 @@ public class LabProject {
         String type = inputType();
         int severity = determineSeverity(type);
         String source = identifySource();
-        //System.out.println("Step 5/5: Enter category");
-        //System.out.print("->");
         String category = assignCategory();
         System.out.println();
         System.out.println("------------------------------------------");
@@ -322,8 +317,8 @@ public class LabProject {
     }
 
     public static String assignCategory(){
-        System.out.println("Step5/5, Add Category ");
-        System.out.println(" 1. Security\n 2. Performance\n 3. Network\n 4. Application\n 5. Database ");
+        System.out.println("Step 5/5: Add Category ");
+        System.out.println("1. Security\n2. Performance\n3. Network\n4. Application\n5. Database ");
         System.out.println("Enter Your Choice: 1-5 ");
         int userChoice = input.nextInt();
         input.nextLine(); // consume newline
@@ -337,26 +332,25 @@ public class LabProject {
                 input.nextLine(); // consume newline
             }
         }
-        String returnStr = "";
-        switch(userChoice){
-            case 1: returnStr = "Security"; break;
-            case 2: returnStr = "Performance"; break;
-            case 3: returnStr = "Network"; break;
-            case 4: returnStr = "Application"; break;
-            case 5: returnStr = "Database"; break;
-            default: returnStr = "Uncategorized"; break;
-        }
+        String returnStr = switch (userChoice) {
+            case 1 -> "Security";
+            case 2 -> "Performance";
+            case 3 -> "Network";
+            case 4 -> "Application";
+            case 5 -> "Database";
+            default -> "Uncategorized";
+        };
         System.out.printf("Category set to %s\n", returnStr);
         return returnStr;
     }
 
     public static int saveLogToArrays(String message, String type, int severity, String source, String category){
-        messages[logCount] = message;
-        types[logCount] = type;
-        severities[logCount] = severity;
-        sources[logCount] = source;
-        categories[logCount] = category;
-        timestamps[logCount] = generateTimestamp();
+        logs[logCount][MESSAGE] = message;
+        logs[logCount][TYPE] = type;
+        logs[logCount][SEVERITY] = String.valueOf(severity);
+        logs[logCount][SOURCE] = source;
+        logs[logCount][CATEGORY] = category;
+        logs[logCount][TIMESTAMP] = generateTimestamp();
         logCount++;
         return logCount;
     }
@@ -380,12 +374,12 @@ public class LabProject {
         System.out.println("------------------------------------------");
         System.out.printf("| Log ID: #%04d\n", index + 1);
         System.out.println("------------------------------------------");
-        System.out.printf("| Timestamp: %s\n", timestamps[index]);
-        System.out.printf("| Type: %s\n", types[index]);
-        System.out.printf("| Severity: %d\n", severities[index]);
-        System.out.printf("| Source: %s\n", sources[index]);
-        System.out.printf("| Category: %s\n", categories[index]);
-        System.out.printf("| Message: %s\n", messages[index]);
+        System.out.printf("| Timestamp: %s\n", logs[index][TIMESTAMP]);
+        System.out.printf("| Type: %s\n", logs[index][TYPE]);
+        System.out.printf("| Severity: %s\n", logs[index][SEVERITY]);
+        System.out.printf("| Source: %s\n", logs[index][SOURCE]);
+        System.out.printf("| Category: %s\n", logs[index][CATEGORY]);
+        System.out.printf("| Message: %s\n", logs[index][MESSAGE]);
         System.out.println("------------------------------------------");
         System.out.println();
     }
