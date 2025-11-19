@@ -383,4 +383,19 @@ public class LabProject {
         System.out.println("------------------------------------------");
         System.out.println();
     }
+
+    public static void displaySearchResults(int[] matchIndices, int matchCount){
+        if (matchCount == 0)
+            System.out.println("No logs Found!");
+        else {
+            System.out.printf("Found %d matching log(s)\n", matchCount);
+            for (int i = 0; i < matchCount; i++){
+                formatLogEntry(matchIndices[i]);
+            }
+            System.out.println("=======================================");
+            System.out.printf("Search complete: %d log(s) found\n", matchCount);
+            System.out.println("=======================================");
+        }
+        pauseAndContinue();
+    }
 }
