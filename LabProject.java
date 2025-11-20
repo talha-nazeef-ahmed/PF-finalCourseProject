@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -93,7 +94,13 @@ public class LabProject {
             switch (choice){
                 case 1 -> addLog();
                 case 2 -> viewAllLogs();
+<<<<<<< HEAD
                 case 3 -> searchByKeyword();
+=======
+                case 3 -> { searchByKeyword();;
+                    
+                }
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
                 case 4 -> { System.out.println(">>> Delete Logs - Coming soon!");
                     pauseAndContinue();
                 }
@@ -384,7 +391,11 @@ public class LabProject {
         System.out.println("------------------------------------------");
         System.out.println("           SEARCH LOGS BY KEYWORD        ");
         System.out.println("------------------------------------------");
+<<<<<<< HEAD
         System.out.print("Enter keyword to search: ");
+=======
+        System.out.print("Enter keyword to search: ");   
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
         String keyword = input.nextLine().trim();
         System.out.println("Searching for "+ keyword +"... ");
         keyword = keyword.toLowerCase();
@@ -396,14 +407,24 @@ public class LabProject {
                     matchIndices[matchCount] = i;
                     matchCount++;
                 }
+<<<<<<< HEAD
             }
+=======
+            }        
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
             displaySearchResults(matchIndices, matchCount);
         }else{
             System.out.println("No keyword entered. Search halted.");
             pauseAndContinue();
+<<<<<<< HEAD
         }
     }
 
+=======
+        } 
+    }
+    
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
 
     public static void displaySearchResults(int[] matchIndices, int matchCount){
         if (matchCount == 0)
