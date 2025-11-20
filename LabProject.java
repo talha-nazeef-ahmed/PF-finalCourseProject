@@ -94,9 +94,13 @@ public class LabProject {
             switch (choice){
                 case 1 -> addLog();
                 case 2 -> viewAllLogs();
+<<<<<<< HEAD
+                case 3 -> searchByKeyword();
+=======
                 case 3 -> { searchByKeyword();;
                     
                 }
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
                 case 4 -> { System.out.println(">>> Delete Logs - Coming soon!");
                     pauseAndContinue();
                 }
@@ -115,9 +119,7 @@ public class LabProject {
                 case 9 -> { System.out.println(">>> Sort Logs - Coming soon!");
                     pauseAndContinue();
                 }
-                case 10 -> { System.out.println(">>> Filter Logs - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 10 -> filterByType();
                 case 11 -> { System.out.println(">>> Backup System - Coming soon!");
                     pauseAndContinue();
                 }
@@ -389,7 +391,11 @@ public class LabProject {
         System.out.println("------------------------------------------");
         System.out.println("           SEARCH LOGS BY KEYWORD        ");
         System.out.println("------------------------------------------");
+<<<<<<< HEAD
+        System.out.print("Enter keyword to search: ");
+=======
         System.out.print("Enter keyword to search: ");   
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
         String keyword = input.nextLine().trim();
         System.out.println("Searching for "+ keyword +"... ");
         keyword = keyword.toLowerCase();
@@ -401,14 +407,24 @@ public class LabProject {
                     matchIndices[matchCount] = i;
                     matchCount++;
                 }
+<<<<<<< HEAD
+            }
+=======
             }        
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
             displaySearchResults(matchIndices, matchCount);
         }else{
             System.out.println("No keyword entered. Search halted.");
             pauseAndContinue();
+<<<<<<< HEAD
+        }
+    }
+
+=======
         } 
     }
     
+>>>>>>> 4e7089f1cb1922a3c5bbfeca8544958b772eab6d
 
     public static void displaySearchResults(int[] matchIndices, int matchCount){
         if (matchCount == 0)
@@ -423,5 +439,55 @@ public class LabProject {
             System.out.println("=======================================");
         }
         pauseAndContinue();
+    }
+
+    public static void filterByType(){
+        String type = "";
+        int count = 0;
+        int [] indices = new int[logCount];
+        System.out.println("------------------------------------------");
+        System.out.println("            FILTER LOGS BY TYPE           ");
+        System.out.println("------------------------------------------");
+        if (logCount == 0) {
+            System.out.println("No logs in system");
+            pauseAndContinue();
+        }
+        else {
+            System.out.println("Select log type to filter:\n1. INFO\n2. WARNING\n3. ERROR\n4. CRITICAL\n5. DEBUG");
+            while (true) {
+                boolean flag = false;
+                System.out.print("Enter your choice (1-5): ");
+                String choice = input.nextLine();
+                try {
+                    int num = Integer.parseInt(choice);
+                        if (num > 0 && num <= 5) {
+                            switch (num) {
+                                case 1 -> type = "INFO";
+                                case 2 -> type = "WARNING";
+                                case 3 -> type = "ERROR";
+                                case 4 -> type = "CRITICAL";
+                                case 5 -> type = "DEBUG";
+                            }
+                            for (int i = 0; i < logCount; i++) {
+                                if (logs[i][TYPE].equals(type)) {
+                                    indices[count] = i;
+                                    count++;
+                                }
+                            }
+                            System.out.printf("Filtering by type: %s\n", type);
+                            displaySearchResults(indices, count);
+                            flag = true;
+                        }
+                        else {
+                            System.out.println("Enter a number between 1-5 inclusively!");
+                        }
+                    if (flag)
+                        break;
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid integer (1-5)!");
+                }
+            }
+        }
     }
 }
