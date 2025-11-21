@@ -470,4 +470,31 @@ public class LabProject {
             }
         }
     }
+    public static void filterBySeverity(){
+        int[] indices = new int[logCount];
+        int count = 0;
+        System.out.println("------------------------------------------");
+        System.out.println("         FILTER LOGS BY SEVERITY          ");
+        System.out.println("------------------------------------------");
+        System.out.println("Severity Levels:\n1. Low\n2. Medium-Low\n3. Medium\n4. Medium-High\n5. High");
+        System.out.print("Enter severity level to filter (1-5): ");
+        String severity = input.next().trim();
+        input.nextLine(); // consume newline
+        if (Integer.valueOf(severity)>5 || Integer.valueOf(severity)<1){
+            System.out.println("Invalid severity level! Please enter a number between 1 and 5.");
+        }
+        else {
+            for (int i=0; i<logCount; i++){
+                if(logs[i][SEVERITY].equals(severity)){
+                    indices[count] = i;
+                    count++;
+                }
+            }
+        }
+            System.out.printf("Filtering by severity: %s\n", severity);
+            displaySearchResults(indices, count);
+    }
+        
+    
 }
+
