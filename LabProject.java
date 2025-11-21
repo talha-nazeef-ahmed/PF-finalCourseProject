@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -113,7 +112,7 @@ public class LabProject {
                 case 9 -> { System.out.println(">>> Sort Logs - Coming soon!");
                     pauseAndContinue();
                 }
-                case 10 -> filterByType();
+                case 10 -> filterLogs();
                 case 11 -> { System.out.println(">>> Backup System - Coming soon!");
                     pauseAndContinue();
                 }
@@ -385,7 +384,7 @@ public class LabProject {
         System.out.println("------------------------------------------");
         System.out.println("           SEARCH LOGS BY KEYWORD        ");
         System.out.println("------------------------------------------");
-        System.out.print("Enter keyword to search: ");   
+        System.out.print("Enter keyword to search: ");
         String keyword = input.nextLine().trim();
         System.out.println("Searching for "+ keyword +"... ");
         keyword = keyword.toLowerCase();
@@ -397,14 +396,14 @@ public class LabProject {
                     matchIndices[matchCount] = i;
                     matchCount++;
                 }
-            }        
+            }
             displaySearchResults(matchIndices, matchCount);
         }else{
             System.out.println("No keyword entered. Search halted.");
             pauseAndContinue();
-        } 
+        }
     }
-    
+
 
     public static void displaySearchResults(int[] matchIndices, int matchCount){
         if (matchCount == 0)
@@ -419,6 +418,32 @@ public class LabProject {
             System.out.println("=======================================");
         }
         pauseAndContinue();
+    }
+    public static void filterLogs(){
+        System.out.println("------------------------------------------");
+        System.out.println("            FILTER LOGS MENU              ");
+        System.out.println("------------------------------------------");
+        System.out.println("1. Filter by Type");
+        System.out.println("2. Filter by Severity");
+        System.out.println("3. Filter by Source");
+        System.out.println("4. Filter by Category");
+        System.out.println("0. Back to Main Menu");
+        System.out.println();
+        System.out.print("Enter your choice (0-4): ");
+
+        String choice = input.nextLine().trim();
+
+        switch(choice){
+            case "1" -> filterByType();
+            case "2" -> filterBySeverity();
+            case "3" -> filterBySource();
+            case "4" -> System.out.println("Coming soon");
+            case "0" -> System.out.println("Returning to main menu...");
+            default -> {
+                System.out.println("Invalid choice!");
+                pauseAndContinue();
+            }
+        }
     }
 
     public static void filterByType(){
@@ -440,27 +465,27 @@ public class LabProject {
                 String choice = input.nextLine();
                 try {
                     int num = Integer.parseInt(choice);
-                        if (num > 0 && num <= 5) {
-                            switch (num) {
-                                case 1 -> type = "INFO";
-                                case 2 -> type = "WARNING";
-                                case 3 -> type = "ERROR";
-                                case 4 -> type = "CRITICAL";
-                                case 5 -> type = "DEBUG";
-                            }
-                            for (int i = 0; i < logCount; i++) {
-                                if (logs[i][TYPE].equals(type)) {
-                                    indices[count] = i;
-                                    count++;
-                                }
-                            }
-                            System.out.printf("Filtering by type: %s\n", type);
-                            displaySearchResults(indices, count);
-                            flag = true;
+                    if (num > 0 && num <= 5) {
+                        switch (num) {
+                            case 1 -> type = "INFO";
+                            case 2 -> type = "WARNING";
+                            case 3 -> type = "ERROR";
+                            case 4 -> type = "CRITICAL";
+                            case 5 -> type = "DEBUG";
                         }
-                        else {
-                            System.out.println("Enter a number between 1-5 inclusively!");
+                        for (int i = 0; i < logCount; i++) {
+                            if (logs[i][TYPE].equals(type)) {
+                                indices[count] = i;
+                                count++;
+                            }
                         }
+                        System.out.printf("Filtering by type: %s\n", type);
+                        displaySearchResults(indices, count);
+                        flag = true;
+                    }
+                    else {
+                        System.out.println("Enter a number between 1-5 inclusively!");
+                    }
                     if (flag)
                         break;
 
@@ -480,7 +505,7 @@ public class LabProject {
         System.out.print("Enter severity level to filter (1-5): ");
         String severity = input.next().trim();
         input.nextLine(); // consume newline
-        if (Integer.valueOf(severity)>5 || Integer.valueOf(severity)<1){
+        if (Integer.parseInt(severity)>5 || Integer.parseInt(severity)<1){
             System.out.println("Invalid severity level! Please enter a number between 1 and 5.");
         }
         else {
@@ -491,10 +516,58 @@ public class LabProject {
                 }
             }
         }
-            System.out.printf("Filtering by severity: %s\n", severity);
-            displaySearchResults(indices, count);
+        System.out.printf("Filtering by severity: %s\n", severity);
+        displaySearchResults(indices, count);
     }
-        
-    
-}
 
+    public static void filterBySource(){
+        String source = "";
+        int count = 0;
+        int [] indices = new int[logCount];
+        System.out.println("------------------------------------------");
+        System.out.println("            FILTER LOGS BY SOURCE           ");
+        System.out.println("------------------------------------------");
+        if (logCount == 0) {
+            System.out.println("No logs in system");
+            pauseAndContinue();
+        }
+        else {
+            System.out.println("Select log type to filter:\n1. Authentication Server\n2. Database Server\n3. Web Server\n4. API Gateway\n5. Network Monitor\n6. File System");
+            while (true) {
+                boolean flag = false;
+                System.out.print("Enter your choice (1-6): ");
+                String choice = input.nextLine();
+                try {
+                    int num = Integer.parseInt(choice);
+                    if (num > 0 && num <= 6) {
+                        switch (num) {
+                            case 1 -> source = "Authentication Server";
+                            case 2 -> source = "Database Server";
+                            case 3 -> source = "Web Server";
+                            case 4 -> source = "API Gateway";
+                            case 5 -> source = "Network Monitor";
+                            case 6 -> source = "File System";
+                        }
+                        for (int i = 0; i < logCount; i++) {
+                            if (logs[i][SOURCE].equals(source)) {
+                                indices[count] = i;
+                                count++;
+                            }
+                        }
+                        System.out.printf("Filtering by type: %s\n", source);
+                        displaySearchResults(indices, count);
+                        flag = true;
+                    }
+                    else {
+                        System.out.println("Enter a number between 1-6 inclusively!");
+                    }
+                    if (flag)
+                        break;
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid integer (1-6)!");
+                }
+            }
+        }
+    }
+}
