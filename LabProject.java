@@ -100,9 +100,7 @@ public class LabProject {
                 case 5 -> { System.out.println(">>> Edit Logs - Coming soon!");
                     pauseAndContinue();
                 }
-                case 6 -> { System.out.println(">>> Statistics - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 6 -> showStatistics();
                 case 7 -> { System.out.println(">>> Trends - Coming soon!");
                     pauseAndContinue();
                 }
@@ -534,14 +532,15 @@ public class LabProject {
                 System.out.println("Invalid choice! Please enter a number between 1 and 5: ");
                 pauseAndContinue();
                 break;
-            }       
-            switch (userChoice) {
-                case 1: category = "Security"; break;
-                case 2: category = "Performance"; break;
-                case 3: category = "Network"; break;
-                case 4: category = "Application"; break;
-                case 5: category = "Database"; break;
             }
+            category = switch (userChoice) {
+                case 1 -> "Security";
+                case 2 -> "Performance";
+                case 3 -> "Network";
+                case 4 -> "Application";
+                case 5 -> "Database";
+                default -> category;
+            };
             if(logCount == 0){
                 System.out.println("No logs in system");                
                 pauseAndContinue();
@@ -556,9 +555,9 @@ public class LabProject {
                 }    
                 System.out.printf("Filtering by category: %s\n", category);
                 displaySearchResults(indices, count);
-                break;
-                   
+
             }
+
         }
     }
 
@@ -610,6 +609,92 @@ public class LabProject {
                     System.out.println("Enter a valid integer (1-6)!");
                 }
             }
+        }
+    }
+
+    public static void showStatistics(){
+        int infoCount = 0, warningCount = 0, errorCount = 0, criticalCount = 0, debugCount = 0;
+        int[] severityCount = new int[6];
+        System.out.println("========================================");
+        System.out.println("          STATISTICS DASHBOARD          ");
+        System.out.println("========================================");
+        if (logCount == 0)
+            System.out.println("No logs to show!");
+        else {
+            for (int i = 0; i < logCount; i++){
+                String type = logs[i][TYPE];
+                switch (type){
+                    case "INFO" -> infoCount++;
+                    case "WARNING" -> warningCount++;
+                    case "ERROR" -> errorCount++;
+                    case "CRITICAL" -> criticalCount++;
+                    case "DEBUG" -> debugCount++;
+                }
+            }
+            for (int i = 0; i < logCount; i++){
+                int severity = Integer.parseInt(logs[i][SEVERITY]);
+                severityCount[severity]++;
+            }
+            System.out.printf("Total Logs: %d\n\n", logCount);
+            System.out.println("BY TYPE:");
+            System.out.println("-------------------------------------");
+            String infoPercent = calculatePercentage(infoCount, logCount);
+            String warningPercent = calculatePercentage(warningCount, logCount);
+            String errorPercent = calculatePercentage(errorCount, logCount);
+            String criticalPercent = calculatePercentage(criticalCount, logCount);
+            String debugPercent = calculatePercentage(debugCount, logCount);
+            System.out.printf("INFO: %2d (%s) ", infoCount, infoPercent);
+            //generateSimpleChart("INFO", infoCount, logCount);
+            System.out.println();
+            System.out.printf("WARNING: %2d (%s) ", warningCount, warningPercent);
+            //generateSimpleChart("WARNING", warningCount, logCount);
+            System.out.println();
+            System.out.printf("ERROR: %2d (%s) ", errorCount, errorPercent);
+            //generateSimpleChart("ERROR", errorCount, logCount);
+            System.out.println();
+            System.out.printf("CRITICAL: %2d (%s) ", criticalCount, criticalPercent);
+            //generateSimpleChart("CRITICAL", criticalCount, logCount;
+            System.out.println();
+            System.out.printf("DEBUG: %2d (%s) ", debugCount, debugPercent);
+            //generateSimpleChart("DEBUG", debugCount, logCount);
+            System.out.println("\n");
+            System.out.println("BY SEVERITY:");
+            System.out.println("-------------------------------------");
+            String level1Percent = calculatePercentage(severityCount[1], logCount);
+            String level2Percent = calculatePercentage(severityCount[2], logCount);
+            String level3Percent = calculatePercentage(severityCount[3], logCount);
+            String level4Percent = calculatePercentage(severityCount[4], logCount);
+            String level5Percent = calculatePercentage(severityCount[5], logCount);
+            System.out.printf("Level 5 (Critical): %2d (%s) ", severityCount[5], level5Percent);
+            //generateSimpleChart("Level 5", severityCount[5], logCount);
+            System.out.println();
+            System.out.printf("Level 4 (High): %2d (%s) ", severityCount[4], level4Percent);
+            //generateSimpleChart("Level 4", severityCount[4], logCount);
+            System.out.println();
+            System.out.printf("Level 3 (Medium): %2d (%s) ", severityCount[3], level3Percent);
+            //generateSimpleChart("Level 3", severityCount[3], logCount);
+            System.out.println();
+            System.out.printf("Level 2 (Low): %2d (%s) ", severityCount[2], level2Percent);
+            //generateSimpleChart("Level 2", severityCount[2], logCount);
+            System.out.println();
+            System.out.printf("Level 1 (Minimal): %2d (%s) ", severityCount[1], level1Percent);
+            //generateSimpleChart("Level 1", severityCount[1], logCount);
+            System.out.println("\n");
+            System.out.println("========================================");
+            System.out.printf("Dashboard generated: %s\n", generateTimestamp());
+            System.out.println("========================================");
+        }
+        pauseAndContinue();
+    }
+
+    public static String calculatePercentage(int count, int total){
+        double percent;
+        if (total == 0){
+            return "0.0%";
+        }
+        else {
+            percent = (double) (count * 100) / total;
+            return String.format("%.1f%%", percent);
         }
     }
 }
