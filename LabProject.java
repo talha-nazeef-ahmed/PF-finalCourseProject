@@ -437,7 +437,7 @@ public class LabProject {
             case "1" -> filterByType();
             case "2" -> filterBySeverity();
             case "3" -> filterBySource();
-            case "4" -> System.out.println("Coming soon");
+            case "4" -> filterByCategory();
             case "0" -> System.out.println("Returning to main menu...");
             default -> {
                 System.out.println("Invalid choice!");
@@ -518,6 +518,48 @@ public class LabProject {
         }
         System.out.printf("Filtering by severity: %s\n", severity);
         displaySearchResults(indices, count);
+    }
+    public static void filterByCategory(){
+        int count = 0;
+        int [] indices = new int[logCount];
+        System.out.println("------------------------------------------ ");
+        System.out.println("         FILTER LOGS BY CATEGORY          ");
+        System.out.println("------------------------------------------ ");
+        System.out.println("Select log category to filter:\n1. Security\n2. Performance\n3. Network\n4. Application\n5. Database");
+        int userChoice = input.nextInt();
+        input.nextLine(); // consume newline
+        String category ="";
+        while (true) {
+            if(userChoice<1 || userChoice>5){
+                System.out.println("Invalid choice! Please enter a number between 1 and 5: ");
+                pauseAndContinue();
+                break;
+            }       
+            switch (userChoice) {
+                case 1: category = "Security"; break;
+                case 2: category = "Performance"; break;
+                case 3: category = "Network"; break;
+                case 4: category = "Application"; break;
+                case 5: category = "Database"; break;
+            }
+            if(logCount == 0){
+                System.out.println("No logs in system");                
+                pauseAndContinue();
+                break;
+            }
+            else {
+                for (int i = 0; i < logCount; i++) {
+                    if (logs[i][CATEGORY].equals(category)) {
+                        indices[count] = i;
+                        count++;
+                    }
+                }    
+                System.out.printf("Filtering by category: %s\n", category);
+                displaySearchResults(indices, count);
+                break;
+                   
+            }
+        }
     }
 
     public static void filterBySource(){
