@@ -534,14 +534,15 @@ public class LabProject {
                 System.out.println("Invalid choice! Please enter a number between 1 and 5: ");
                 pauseAndContinue();
                 break;
-            }       
-            switch (userChoice) {
-                case 1: category = "Security"; break;
-                case 2: category = "Performance"; break;
-                case 3: category = "Network"; break;
-                case 4: category = "Application"; break;
-                case 5: category = "Database"; break;
             }
+            category = switch (userChoice) {
+                case 1 -> "Security";
+                case 2 -> "Performance";
+                case 3 -> "Network";
+                case 4 -> "Application";
+                case 5 -> "Database";
+                default -> category;
+            };
             if(logCount == 0){
                 System.out.println("No logs in system");                
                 pauseAndContinue();
@@ -556,9 +557,9 @@ public class LabProject {
                 }    
                 System.out.printf("Filtering by category: %s\n", category);
                 displaySearchResults(indices, count);
-                break;
-                   
+
             }
+
         }
     }
 
