@@ -26,7 +26,7 @@ public class LabProject {
 
     public static void displayWelcomeBanner(){
         System.out.println("*******************************************");
-        System.out.println("***     LOG MANAGEMENT SYSTEM v1.0      ***");
+        System.out.println("***             SIEM v1.0               ***");
         System.out.println("*******************************************");
         System.out.println();
         System.out.printf("Session Started: %s\n", generateTimestamp());
@@ -45,7 +45,7 @@ public class LabProject {
     public static void initializeSystem(){
         System.out.println("Initializing system...");
         logs = new String[INITIAL_CAPACITY][LOG_FIELDS];
-        System.out.printf("2D array allocated (capacity =  %d logs, %d fields\n)", INITIAL_CAPACITY, LOG_FIELDS);
+        System.out.printf("2D array allocated (capacity =  %d logs, %d fields)\n", INITIAL_CAPACITY, LOG_FIELDS);
         System.out.println("log counter initialized");
         System.out.println();
     }
@@ -100,9 +100,7 @@ public class LabProject {
                 case 5 -> { System.out.println(">>> Edit Logs - Coming soon!");
                     pauseAndContinue();
                 }
-                case 6 -> { showStatistics();
-                    pauseAndContinue();
-                }
+                case 6 -> showStatistics();
                 case 7 -> { System.out.println(">>> Trends - Coming soon!");
                     pauseAndContinue();
                 }
@@ -168,7 +166,7 @@ public class LabProject {
         System.out.printf("Logs in System: %d\n", logCount);
         System.out.println("------------------------------------------");
         System.out.println();
-        System.out.println("Thank you for using Log Management System!");
+        System.out.println("Thank you for using Security Information and Event Management System!");
         System.out.println("Goodbye, Talha Nazeef Ahmed & Nishat Mehdi!");
         System.out.println("------------------------------------------");
         System.out.println();
@@ -645,20 +643,20 @@ public class LabProject {
             String errorPercent = calculatePercentage(errorCount, logCount);
             String criticalPercent = calculatePercentage(criticalCount, logCount);
             String debugPercent = calculatePercentage(debugCount, logCount);
-            System.out.printf("INFO: %2d (%s) ", infoCount, infoPercent);
-            generateSimpleChart("INFO", infoCount, logCount);
+            System.out.printf("%-10s %2d (%-6s) ", "INFO: ", infoCount, infoPercent);
+            generateSimpleChart(infoCount, logCount);
             System.out.println();
-            System.out.printf("WARNING: %2d (%s) ", warningCount, warningPercent);
-            generateSimpleChart("WARNING", warningCount, logCount);
+            System.out.printf("%-10s %2d (%-6s) ", "WARNING: ", warningCount, warningPercent);
+            generateSimpleChart(warningCount, logCount);
             System.out.println();
-            System.out.printf("ERROR: %2d (%s) ", errorCount, errorPercent);
-            generateSimpleChart("ERROR", errorCount, logCount);
+            System.out.printf("%-10s %2d (%-6s) ", "ERROR: ", errorCount, errorPercent);
+            generateSimpleChart(errorCount, logCount);
             System.out.println();
-            System.out.printf("CRITICAL: %2d (%s) ", criticalCount, criticalPercent);
-            generateSimpleChart("CRITICAL", criticalCount, logCount);
+            System.out.printf("%-10s %2d (%-6s) ", "CRITICAL: ", criticalCount, criticalPercent);
+            generateSimpleChart(criticalCount, logCount);
             System.out.println();
-            System.out.printf("DEBUG: %2d (%s) ", debugCount, debugPercent);
-            generateSimpleChart("DEBUG", debugCount, logCount);
+            System.out.printf("%-10s %2d (%-6s) ", "DEBUG: ", debugCount, debugPercent);
+            generateSimpleChart(debugCount, logCount);
             System.out.println("\n");
             System.out.println("BY SEVERITY:");
             System.out.println("-------------------------------------");
@@ -667,20 +665,20 @@ public class LabProject {
             String level3Percent = calculatePercentage(severityCount[3], logCount);
             String level4Percent = calculatePercentage(severityCount[4], logCount);
             String level5Percent = calculatePercentage(severityCount[5], logCount);
-            System.out.printf("Level 5 (Critical): %2d (%s) ", severityCount[5], level5Percent);
-            generateSimpleChart("Level 5", severityCount[5], logCount);
+            System.out.printf("%-20s %2d (%-6s) ", "Level 5 (Critical): ", severityCount[5], level5Percent);
+            generateSimpleChart(severityCount[5], logCount);
             System.out.println();
-            System.out.printf("Level 4 (High): %2d (%s) ", severityCount[4], level4Percent);
-            generateSimpleChart("Level 4", severityCount[4], logCount);
+            System.out.printf("%-20s %2d (%-6s) ", "Level 4 (High): ", severityCount[4], level4Percent);
+            generateSimpleChart(severityCount[4], logCount);
             System.out.println();
-            System.out.printf("Level 3 (Medium): %2d (%s) ", severityCount[3], level3Percent);
-            generateSimpleChart("Level 3", severityCount[3], logCount);
+            System.out.printf("%-20s %2d (%-6s) ", "Level 3 (Medium): ", severityCount[3], level3Percent);
+            generateSimpleChart(severityCount[3], logCount);
             System.out.println();
-            System.out.printf("Level 2 (Low): %2d (%s) ", severityCount[2], level2Percent);
-            generateSimpleChart("Level 2", severityCount[2], logCount);
+            System.out.printf("%-20s %2d (%-6s) ", "Level 2 (Low): ", severityCount[2], level2Percent);
+            generateSimpleChart(severityCount[2], logCount);
             System.out.println();
-            System.out.printf("Level 1 (Minimal): %2d (%s) ", severityCount[1], level1Percent);
-            generateSimpleChart("Level 1", severityCount[1], logCount);
+            System.out.printf("%-20s %2d (%-6s) ", "Level 1 (Minimal): ", severityCount[1], level1Percent);
+            generateSimpleChart(severityCount[1], logCount);
             System.out.println("\n");
             System.out.println("========================================");
             System.out.printf("Dashboard generated: %s\n", generateTimestamp());
@@ -699,14 +697,46 @@ public class LabProject {
             return String.format("%.1f%%", percent);
         }
     }
-    public static void generateSimpleChart(String label, int count, int total){
+    public static void generateSimpleChart(int count, int total){
         int barLength = (int) (((double) count / total) * 20);
-        System.out.print(" | ");
         for (int i = 0; i < barLength; i++){
-            System.out.print("#");
+            System.out.print("█");
         }
         for (int i = barLength; i < 20; i++){
-            System.out.print("-");
+            System.out.print("░");
         }
+    }
+
+    public static int detectBruteForce(){
+        int bruteForceCount = 0;
+        int count = 0;
+        int initialCheck = 0;
+        String[] keywords = {"login failed", "failed login attempt", "authentication failed", "wrong credentials", "retry login", "password does not match"};
+        System.out.println("Analyzing logs for Brute Force Attacks...");
+        if (logCount <= 2)
+            System.out.println("No possible pattern of Brute Force due to low log count");
+        else {
+            for (int i = 0; i < logCount; i++) {
+                for (String word : keywords) {
+                    if (logs[i][MESSAGE].toLowerCase().contains(word) && logs[i][TYPE].equals("ERROR")) {
+                        if (count == 0)
+                            initialCheck = i;
+                        count++;
+                        break;
+                    }
+                }
+                if (count == 3 && i - initialCheck == 2) {
+                    bruteForceCount++;
+                    System.out.printf("Brute Force no: %d\n", bruteForceCount);
+                    System.out.println("Possible Brute Force detected!");
+                    System.out.printf("Location: Logs: %d - %d\n\n", initialCheck + 1, i + 1);
+                }
+                else if (i - initialCheck == 2 && count < 3) {
+                    initialCheck = 0;
+                    count = 0;
+                }
+            }
+        }
+        return bruteForceCount;
     }
 }
