@@ -104,9 +104,7 @@ public class LabProject {
                 case 7 -> { System.out.println(">>> Trends - Coming soon!");
                     pauseAndContinue();
                 }
-                case 8 -> { System.out.println(">>> Find Anomalies - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 8 -> anomalyDetection();
                 case 9 -> { System.out.println(">>> Sort Logs - Coming soon!");
                     pauseAndContinue();
                 }
@@ -256,7 +254,7 @@ public class LabProject {
         int severity;
         switch (type) {
             case "CRITICAL" -> severity = 5;
-            case "ERROR" -> severity = 3;
+            case "ERROR" -> severity = 4;
             case "WARNING" -> severity = 2;
             default -> severity = 1;
         }
@@ -706,15 +704,39 @@ public class LabProject {
             System.out.print("░");
         }
     }
+    public static void anomalyDetection(){
+        while (true){
+            System.out.println("Enter a choice for a scan\n1. Brute-force attack scan\n2. Suspicious activity scan\n0. Exit");
+            System.out.print("-> ");
+            String choice = input.nextLine();
+            try {
+                int scan = Integer.parseInt(choice);
+                if (scan > 2 || scan < 0)
+                    System.out.println("Enter a valid choice between (0-2)");
+                else {
+                    if (scan == 0)
+                        break;
+                    else if (scan == 1)
+                        detectBruteForce();
+                    else
+                        detectSuspiciousActivity();
+                }
+            }
+            catch (NumberFormatException e){
+                System.out.println("Please enter a valid integer!");
+            }
 
-    public static int detectBruteForce(){
+        }
+    }
+
+    public static void detectBruteForce(){
         int bruteForceCount = 0;
         int count = 0;
         int initialCheck = 0;
-        String[] keywords = {"login failed", "failed login attempt", "authentication failed", "wrong credentials", "retry login", "password does not match"};
+        String[] keywords = {"login failed", "failed login attempt", "authentication failed", "wrong credentials", "retry login", "password does not match","invalid password","incorrect password","access denied","unauthorized access","failed authentication","login attempt failed","bad credentials","authentication error","invalid credentials", "password incorrect","user not found", "account locked, too many attempts"};
         System.out.println("Analyzing logs for Brute Force Attacks...");
         if (logCount <= 2)
-            System.out.println("No possible pattern of Brute Force due to low log count");
+            System.out.println("No possible pattern of brute-force due to low log count");
         else {
             for (int i = 0; i < logCount; i++) {
                 for (String word : keywords) {
@@ -727,9 +749,12 @@ public class LabProject {
                 }
                 if (count == 3 && i - initialCheck == 2) {
                     bruteForceCount++;
-                    System.out.printf("Brute Force no: %d\n", bruteForceCount);
-                    System.out.println("Possible Brute Force detected!");
-                    System.out.printf("Location: Logs: %d - %d\n\n", initialCheck + 1, i + 1);
+                    System.out.println("Possible brute-force detected!");
+                    System.out.println("-----------------------------------------");
+                    System.out.printf("  -> Brute-force no: %d\n", bruteForceCount);
+                    System.out.printf("  -> Location: Logs: %d - %d\n\n", initialCheck + 1, i + 1);
+                    initialCheck = i;
+                    count = 1;
                 }
                 else if (i - initialCheck == 2 && count < 3) {
                     initialCheck = 0;
@@ -737,6 +762,40 @@ public class LabProject {
                 }
             }
         }
-        return bruteForceCount;
+        System.out.printf("Total brute-force attacks: %d\n", bruteForceCount);
+        if (bruteForceCount >= 3)
+            System.out.println("Risk assessment: Critical\nImmediate attention is required");
+        else if (bruteForceCount > 0)
+            System.out.println("Risk assessment: High\nYour system seems insecure, better to take a look!");
+        else
+            System.out.println("No brute-force detected!");
+        pauseAndContinue();
+    }
+
+    public static void detectSuspiciousActivity(){
+        int sev4 = 0, sev5 = 0, totalSev;
+        System.out.println("Analyzing logs for any suspicious activity...");
+        if (logCount <= 4)
+            System.out.println("No possible pattern of suspicious activity due to low log count");
+        else{
+            for (int i = 0; i < logCount; i++){
+                if (Integer.parseInt(logs[i][SEVERITY]) == 4)
+                    sev4++;
+                else if (Integer.parseInt(logs[i][SEVERITY]) == 5)
+                    sev5++;
+            }
+            totalSev = sev4 + sev5;
+            if (totalSev >= 5){
+                System.out.println("Suspicious Activity Detected!");
+                System.out.println("--------------------------------------");
+                System.out.printf("  -> High Severity Events: %d\n", totalSev);
+                System.out.printf("  -> Severity 5 (Critical): %d logs\n", sev5);
+                System.out.printf("  -> Severity 4 (High): %d logs\n", sev4);
+                System.out.println("--------------------------------------");
+            }
+            else
+                System.out.println("Risk assessment: Normal\nYour system seems secure!");
+        }
+        pauseAndContinue();
     }
 }
