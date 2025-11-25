@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.io.PrintWriter;
 
 public class LabProject {
     final static int INITIAL_CAPACITY = 1000;
@@ -78,7 +79,7 @@ public class LabProject {
             System.out.println("8. Find Anomalies");
             System.out.println("9. Sort Logs");
             System.out.println("10. Filter Logs");
-            System.out.println("11. Backup System");
+            System.out.println("11. Export Logs");
             System.out.println("12. Restore Backup");
             System.out.println("13. Compare Backups");
             System.out.println("14. System Diagnostics");
@@ -109,9 +110,7 @@ public class LabProject {
                     pauseAndContinue();
                 }
                 case 10 -> filterLogs();
-                case 11 -> { System.out.println(">>> Backup System - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 11 -> exportLogs();
                 case 12 -> { System.out.println(">>> Restore Backup - Coming soon!");
                     pauseAndContinue();
                 }
@@ -733,7 +732,7 @@ public class LabProject {
         int bruteForceCount = 0;
         int count = 0;
         int initialCheck = 0;
-        String[] keywords = {"login failed", "failed login attempt", "authentication failed", "wrong credentials", "retry login", "password does not match","invalid password","incorrect password","access denied","unauthorized access","failed authentication","login attempt failed","bad credentials","authentication error","invalid credentials", "password incorrect","user not found", "account locked, too many attempts"};
+        String[] keywords = {"login failed", "failed login attempt", "authentication failed", "wrong credentials", "retry login", "password does not match","invalid password","incorrect password","access denied","unauthorized access","failed authentication","login attempt failed","bad credentials","authentication error","invalid credentials", "password incorrect","user not found", "account locked", "too many attempts"};
         System.out.println("Analyzing logs for Brute Force Attacks...");
         if (logCount <= 2)
             System.out.println("No possible pattern of brute-force due to low log count");
@@ -795,6 +794,57 @@ public class LabProject {
             }
             else
                 System.out.println("Risk assessment: Normal\nYour system seems secure!");
+        }
+        pauseAndContinue();
+    }
+
+    public static void exportLogs(){
+        if (logCount < 1)
+            System.out.println("No logs to export!");
+        else {
+            String date = generateTimestamp().substring(0, 10);
+            String filename = "SIEM_EXPORT_" + date + ".txt";
+            System.out.println("===============================================");
+            System.out.println("              EXPORT LOGS TO FILE              ");
+            System.out.println("===============================================\n");
+            System.out.printf("Total logs to export: %d\n\n", logCount);
+            System.out.println("Exporting logs to file...\n\n");
+            try {
+                PrintWriter writer = new PrintWriter(filename);
+                writer.println("===============================================");
+                writer.println("             SIEM LOG EXPORT REPORT            ");
+                writer.println("===============================================");
+                writer.printf("%-20s %s\n", "Export Date:", generateTimestamp());
+                writer.printf("%-20s %s\n", "Session Started:", sessionStartTime);
+                writer.printf("%-20s %d\n", "Total Logs:", logCount);
+                writer.printf("%-20s %s\n", "Authors:", "Talha Nazeef Ahmed & Nishat Mehdi");
+                writer.println("================================================\n\n");
+                writer.println("LOG ENTRIES:");
+                writer.println("------------------------------------------------\n\n");
+                for(int i = 0; i < logCount; i++){
+                    writer.println("------------------------------------------");
+                    writer.printf("| Log ID: #%04d\n", i + 1);
+                    writer.println("------------------------------------------");
+                    writer.printf("| Timestamp: %s\n", logs[i][TIMESTAMP]);
+                    writer.printf("| Type: %s\n", logs[i][TYPE]);
+                    writer.printf("| Severity: %s\n", logs[i][SEVERITY]);
+                    writer.printf("| Source: %s\n", logs[i][SOURCE]);
+                    writer.printf("| Category: %s\n", logs[i][CATEGORY]);
+                    writer.printf("| Message: %s\n", logs[i][MESSAGE]);
+                    writer.println("------------------------------------------\n\n");
+                }
+                writer.println("===============================================");
+                writer.printf("END OF REPORT - TOTAL LOGS: %d\n", logCount);
+                writer.println("===============================================");
+                writer.close();
+                System.out.printf("Export Successful!\n->File created: %s\n->Logs exported: %d\n\n", filename, logCount);
+                System.out.println("===============================================");
+                System.out.printf("Export completed: %s\n", generateTimestamp());
+                System.out.println("===============================================");
+            }
+            catch (Exception e){
+                System.out.printf("Error exporting logs!\nError details: %s\n", e.getMessage());
+            }
         }
         pauseAndContinue();
     }
