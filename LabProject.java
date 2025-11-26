@@ -1,7 +1,8 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class LabProject {
     final static int INITIAL_CAPACITY = 1000;
@@ -80,10 +81,9 @@ public class LabProject {
             System.out.println("9. Sort Logs");
             System.out.println("10. Filter Logs");
             System.out.println("11. Export Logs");
-            System.out.println("12. Restore Backup");
-            System.out.println("13. Compare Backups");
-            System.out.println("14. System Diagnostics");
-            System.out.println("15. Help & Documentation");
+            System.out.println("12. Import Logs");
+            System.out.println("13. System Diagnostics");
+            System.out.println("14. Help & Documentation");
             System.out.println("0. Exit");
             System.out.println();
             int choice = getMenuChoice();
@@ -111,16 +111,11 @@ public class LabProject {
                 }
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
-                case 12 -> { System.out.println(">>> Restore Backup - Coming soon!");
+                case 12 -> importLogs();
+                case 13 -> { System.out.println(">>> Diagnostics - Coming soon!");
                     pauseAndContinue();
                 }
-                case 13 -> {System.out.println(">>> Compare Backups - Coming soon!");
-                    pauseAndContinue();
-                }
-                case 14 -> { System.out.println(">>> Diagnostics - Coming soon!");
-                    pauseAndContinue();
-                }
-                case 15 -> { System.out.println(">>> Help - Coming soon!");
+                case 14 -> { System.out.println(">>> Help - Coming soon!");
                     pauseAndContinue();
                 }
                 default -> { System.out.println("ERROR: Invalid choice! Please Enter 0-15");
@@ -802,7 +797,7 @@ public class LabProject {
         if (logCount < 1)
             System.out.println("No logs to export!");
         else {
-            String date = generateTimestamp().substring(0, 10);
+            String date = generateTimestamp().replace(" || ", "_").replace(":", "-");
             String filename = "SIEM_EXPORT_" + date + ".txt";
             System.out.println("===============================================");
             System.out.println("              EXPORT LOGS TO FILE              ");
@@ -845,6 +840,60 @@ public class LabProject {
             catch (Exception e){
                 System.out.printf("Error exporting logs!\nError details: %s\n", e.getMessage());
             }
+        }
+        pauseAndContinue();
+    }
+
+    public static void importLogs(){
+        ArrayList<String> timestamp = new ArrayList<>();
+        ArrayList<String> type = new ArrayList<>();
+        ArrayList<String> severity = new ArrayList<>();
+        ArrayList<String> source = new ArrayList<>();
+        ArrayList<String> category = new ArrayList<>();
+        ArrayList<String> message = new ArrayList<>();
+        System.out.println("Enter the exact file name you want to import: ");
+        try {
+            String filename = input.nextLine();
+            if(!filename.endsWith(".txt")){
+                filename = filename + ".txt";
+            }
+            File file = new File("C:\\Users\\Talha Nazeef Ahmed\\Desktop\\Github\\PF-finalCourseProject\\" + filename);
+            Scanner read = new Scanner(file);
+            while (read.hasNext()){
+                String line = read.nextLine();
+                if (line.startsWith("| Timestamp:"))
+                    timestamp.add(line.substring(13));
+                else if (line.startsWith("| Type:"))
+                    type.add(line.substring(8));
+                else if (line.startsWith("| Severity:"))
+                    severity.add(line.substring(12));
+                else if (line.startsWith("| Source:"))
+                    source.add(line.substring(10));
+                else if (line.startsWith("| Category:"))
+                    category.add(line.substring(12));
+                else if (line.startsWith("| Message:"))
+                    message.add(line.substring(11));
+            }
+            read.close();
+            int length = timestamp.size() + logCount;
+            for (int i = logCount; i < length; i++){
+                logs[i][TIMESTAMP] = timestamp.get(i - logCount);
+                logs[i][TYPE] = type.get(i - logCount);
+                logs[i][SEVERITY] = severity.get(i - logCount);
+                logs[i][SOURCE] = source.get(i - logCount);
+                logs[i][CATEGORY] = category.get(i - logCount);
+                logs[i][MESSAGE] = message.get(i - logCount);
+            }
+            logCount = length;
+            System.out.println("Import successful!");
+            System.out.printf("Logs imported: %d\n", timestamp.size());
+            System.out.printf("Total logs: %d\n", logCount);
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("File not found, beware of typos!");
+        }
+        catch (Exception e) {
+            System.out.printf("Import unsuccessful!\nError details: %s", e.getMessage());
         }
         pauseAndContinue();
     }
