@@ -104,8 +104,7 @@ public class LabProject {
                     pauseAndContinue();
                 }
                 case 8 -> anomalyDetection();
-                case 9 -> { sortLogsBySeverity();                    
-                }
+                case 9 -> sortLogsBySeverity();
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
                 case 12 -> importLogs();
