@@ -106,8 +106,7 @@ public class LabProject {
                     pauseAndContinue();
                 }
                 case 8 -> anomalyDetection();
-                case 9 -> { System.out.println(">>> Sort Logs - Coming soon!");
-                    pauseAndContinue();
+                case 9 -> { sortLogsBySeverity();                    
                 }
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
@@ -792,6 +791,77 @@ public class LabProject {
         }
         pauseAndContinue();
     }
+    
+public static void sortLogsBySeverity(){
+    System.out.println("===============================================");
+    System.out.println("           SORTING LOGS BY SEVERITY            ");
+    System.out.println("===============================================");
+    System.out.println("Sort in ascending or descending order? ");
+    System.out.println("1. Ascending (Low to High)");
+    System.out.println("2. Descending (High to Low)");
+    System.out.print("Enter your choice (1-2): ");
+
+    try {
+        String choiceStr = input.next().trim();
+        input.nextLine();
+        
+        int order = Integer.parseInt(choiceStr);
+        
+        if (order != 1 && order != 2) {
+            System.out.println("Invalid choice! Please enter '1' or '2'. Sorting aborted.");
+            pauseAndContinue();
+            return; 
+        }
+
+        if (logCount == 0) {
+            System.out.println("No logs to sort in the system.");
+            pauseAndContinue();
+            return;
+        }
+
+        int[] sortedIndices = new int[logCount];
+        for (int i = 0; i < logCount; i++) {
+            sortedIndices[i] = i;
+        }
+
+        for (int i = 0; i < logCount - 1; i++) {
+            int bestIndex = i;
+
+            for (int j = i + 1; j < logCount; j++) {
+                int bestSeverity = Integer.parseInt(logs[sortedIndices[bestIndex]][SEVERITY]);
+                int currentSeverity = Integer.parseInt(logs[sortedIndices[j]][SEVERITY]);
+
+                if (order == 1) {
+                    if (currentSeverity < bestSeverity) {
+                        bestIndex = j; 
+                    }
+                } else {
+                    if (currentSeverity > bestSeverity) {
+                        bestIndex = j; 
+                    }
+                }
+            }
+            
+            if (bestIndex != i) {
+                int temp = sortedIndices[i];
+                sortedIndices[i] = sortedIndices[bestIndex];
+                sortedIndices[bestIndex] = temp;
+            }
+        }
+        
+        System.out.println("======================================");
+        System.out.println("            SORTED LOGS               ");
+        System.out.println("======================================");
+        displaySearchResults(sortedIndices, logCount);
+
+    } catch(NumberFormatException e){
+        System.out.println("Invalid input format! Please enter a number (1 or 2). Sorting aborted.");
+        pauseAndContinue();
+    } catch(Exception e){
+        System.out.println("An unexpected error occurred during sorting. Aborting.");
+        pauseAndContinue();
+    }
+}
 
     public static void exportLogs(){
         if (logCount < 1)
