@@ -95,9 +95,7 @@ public class LabProject {
                 case 1 -> addLog();
                 case 2 -> viewAllLogs();
                 case 3 -> searchByKeyword();
-                case 4 -> { System.out.println(">>> Delete Logs - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 4 -> deleteLogs();
                 case 5 -> { System.out.println(">>> Edit Logs - Coming soon!");
                     pauseAndContinue();
                 }
@@ -106,8 +104,7 @@ public class LabProject {
                     pauseAndContinue();
                 }
                 case 8 -> anomalyDetection();
-                case 9 -> { sortLogsBySeverity();                    
-                }
+                case 9 -> sortLogsBySeverity();
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
                 case 12 -> importLogs();
@@ -964,6 +961,44 @@ public static void sortLogsBySeverity(){
         }
         catch (Exception e) {
             System.out.printf("Import unsuccessful!\nError details: %s", e.getMessage());
+        }
+        pauseAndContinue();
+    }
+
+    public static void deleteLogs(){
+        System.out.println("==========================================");
+        System.out.println("              DELETE LOGS                 ");
+        System.out.println("==========================================\n");
+        if (logCount == 0)
+            System.out.println("No logs are there to delete!");
+        else {
+            while (true) {
+                System.out.println("Enter the log ID you want to delete: ");
+                String id = input.nextLine();
+                try {
+                    int logNum = Integer.parseInt(id);
+                    if (logNum > logCount || logNum < 1)
+                        System.out.println("Enter the log ID that exists!");
+                    else if (logNum == logCount) {
+                        logCount--;
+                        System.out.printf("Log ID %d is deleted successfully!\n", logNum);
+                        break;
+                    }
+                    else {
+                        for (int i = logNum; i < logCount; i++){
+                            for (int j = 0; j < 6; j++){
+                                logs[i - 1][j] = logs[i][j];
+                            }
+                        }
+                        logCount--;
+                        System.out.printf("Log ID %d is deleted successfully!\n", logNum);
+                        break;
+                    }
+                }
+                catch (NumberFormatException e){
+                    System.out.println("Enter a valid integer!");
+                }
+            }
         }
         pauseAndContinue();
     }
