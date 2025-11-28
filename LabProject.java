@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -96,8 +97,7 @@ public class LabProject {
                 case 2 -> viewAllLogs();
                 case 3 -> searchByKeyword();
                 case 4 -> deleteLogs();
-                case 5 -> { System.out.println(">>> Edit Logs - Coming soon!");
-                    pauseAndContinue();
+                case 5 -> { editExistingLogs();
                 }
                 case 6 -> showStatistics();
                 case 7 -> { System.out.println(">>> Trends - Coming soon!");
@@ -404,6 +404,83 @@ public class LabProject {
             System.out.println("=======================================");
         }
         pauseAndContinue();
+    }
+
+    public static void editExistingLogs(){
+        System.out.println("----------------------------------" );
+        System.out.println("      EDIT EXISTING LOG ENTRY       ");
+        System.out.println("------------------------------------");
+        System.out.println(" YOU ARE IN EDIT MODE!");
+        System.out.println(" Enter Log ID to edit: ");        
+        int logID = input.nextInt();
+        input.nextLine();
+        
+        for (int i=0 ; i<logCount; i++){
+            if (logs[i][TIMESTAMP].equals(logs[logID-1][TIMESTAMP])){
+                System.out.println(" Log Found! ");
+                System.out.println("YOU ARE ABOUT TO EDIT THIS LOG:");
+                formatLogEntry(i);
+                System.out.println(" What do you want to edit? ");
+                System.out.println(" 1. Message ");
+                System.out.println(" 2. Type ");
+                System.out.println(" 3. Severity ");
+                System.out.println(" 4. Source ");
+                System.out.println(" 5. Category ");
+                System.out.print(" Enter your choice (1-5): ");
+                int choice = input.nextInt();
+                input.nextLine(); // consume newline
+                switch (choice){
+                    case 1 -> {
+                        System.out.print(" Enter new message: ");
+                        String newMessage = inputMessage();
+                        logs[i][MESSAGE] = newMessage;
+                        System.out.println(" Message updated successfully! ");
+                    }
+                    case 2 -> {
+                        String newType = inputType();
+                        logs[i][TYPE] = newType;
+                        System.out.println(" Type updated successfully! ");
+                    }
+                    case 3 -> {
+                        while(true){
+                            System.out.print(" Enter new severity (1-5): ");
+                            try{
+                                String newSeverity = input.nextLine();
+                                if(Integer.parseInt(newSeverity)<1 || Integer.parseInt(newSeverity)>5){
+                                    System.out.println(" Invalid severity! Try Again. ");                                
+                                
+                                }else{
+                                    logs[i][SEVERITY] = newSeverity;
+                                    System.out.println(" Severity updated successfully! ");
+                                    break;
+                                }
+                            }catch(NumberFormatException e){
+                                System.out.println(" Invalid!, Enter a number between 1 and 5 ");
+                            }
+                        }   
+                }
+                    case 4 -> {
+                        String newSource = identifySource();
+                        logs[i][SOURCE] = newSource;
+                        System.out.println(" Source updated successfully! ");
+                    }
+                    case 5 -> {
+                        String newCategory = assignCategory();
+                        logs[i][CATEGORY] = newCategory;
+                        System.out.println(" Category updated successfully! ");
+                    }
+                    default -> System.out.println(" Invalid choice! Edit aborted. ");
+                }
+                pauseAndContinue();
+                return;
+            }
+            else{
+                System.out.println(" Log not found! Please check the Log ID and try again. ");
+                pauseAndContinue();
+            }
+        }
+
+
     }
     public static void filterLogs(){
         System.out.println("------------------------------------------");
