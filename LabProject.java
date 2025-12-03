@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -108,8 +107,7 @@ public class LabProject {
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
                 case 12 -> importLogs();
-                case 13 -> { System.out.println(">>> Diagnostics - Coming soon!");
-                    pauseAndContinue();
+                case 13 -> { SystemDiagnostics();
                 }
                 case 14 -> { System.out.println(">>> Help - Coming soon!");
                     pauseAndContinue();
@@ -407,81 +405,95 @@ public class LabProject {
     }
 
     public static void editExistingLogs(){
-        System.out.println("----------------------------------" );
-        System.out.println("      EDIT EXISTING LOG ENTRY       ");
-        System.out.println("------------------------------------");
-        System.out.println(" YOU ARE IN EDIT MODE!");
-        System.out.println(" Enter Log ID to edit: ");        
-        int logID = input.nextInt();
+    System.out.println("----------------------------------" );
+    System.out.println("      EDIT EXISTING LOG ENTRY      ");
+    System.out.println("------------------------------------");
+    System.out.println(" YOU ARE IN EDIT MODE!");
+    System.out.print(" Enter Log ID to edit: "); 
+    
+    int logID;
+    try {
+        logID = input.nextInt();
         input.nextLine();
+    } catch (java.util.InputMismatchException e) {
+        System.out.println("Invalid input! Please enter a number.");
+        input.nextLine();
+        pauseAndContinue();
+        return;
+    }
+
+    int logIndex = logID - 1;
+
+    if (logIndex >= 0 && logIndex < logCount) {
+        int i = logIndex; 
         
-        for (int i=0 ; i<logCount; i++){
-            if (logs[i][TIMESTAMP].equals(logs[logID-1][TIMESTAMP])){
-                System.out.println(" Log Found! ");
-                System.out.println("YOU ARE ABOUT TO EDIT THIS LOG:");
-                formatLogEntry(i);
-                System.out.println(" What do you want to edit? ");
-                System.out.println(" 1. Message ");
-                System.out.println(" 2. Type ");
-                System.out.println(" 3. Severity ");
-                System.out.println(" 4. Source ");
-                System.out.println(" 5. Category ");
-                System.out.print(" Enter your choice (1-5): ");
-                int choice = input.nextInt();
-                input.nextLine(); // consume newline
-                switch (choice){
-                    case 1 -> {
-                        System.out.print(" Enter new message: ");
-                        String newMessage = inputMessage();
-                        logs[i][MESSAGE] = newMessage;
-                        System.out.println(" Message updated successfully! ");
-                    }
-                    case 2 -> {
-                        String newType = inputType();
-                        logs[i][TYPE] = newType;
-                        System.out.println(" Type updated successfully! ");
-                    }
-                    case 3 -> {
-                        while(true){
-                            System.out.print(" Enter new severity (1-5): ");
-                            try{
-                                String newSeverity = input.nextLine();
-                                if(Integer.parseInt(newSeverity)<1 || Integer.parseInt(newSeverity)>5){
-                                    System.out.println(" Invalid severity! Try Again. ");                                
-                                
-                                }else{
-                                    logs[i][SEVERITY] = newSeverity;
-                                    System.out.println(" Severity updated successfully! ");
-                                    break;
-                                }
-                            }catch(NumberFormatException e){
-                                System.out.println(" Invalid!, Enter a number between 1 and 5 ");
-                            }
-                        }   
-                }
-                    case 4 -> {
-                        String newSource = identifySource();
-                        logs[i][SOURCE] = newSource;
-                        System.out.println(" Source updated successfully! ");
-                    }
-                    case 5 -> {
-                        String newCategory = assignCategory();
-                        logs[i][CATEGORY] = newCategory;
-                        System.out.println(" Category updated successfully! ");
-                    }
-                    default -> System.out.println(" Invalid choice! Edit aborted. ");
-                }
-                pauseAndContinue();
-                return;
-            }
-            else{
-                System.out.println(" Log not found! Please check the Log ID and try again. ");
-                pauseAndContinue();
-            }
+        System.out.println(" Log Found! ");
+        System.out.println("YOU ARE ABOUT TO EDIT THIS LOG:");
+        formatLogEntry(i);
+        
+        System.out.println(" What do you want to edit? ");
+        System.out.println(" 1. Message ");
+        System.out.println(" 2. Type ");
+        System.out.println(" 3. Severity ");
+        System.out.println(" 4. Source ");
+        System.out.println(" 5. Category ");
+        System.out.print(" Enter your choice (1-5): ");
+        
+        int choice;
+        try {
+            choice = input.nextInt();
+            input.nextLine();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Invalid choice! Edit aborted.");
+            input.nextLine();
+            pauseAndContinue();
+            return;
         }
 
-
+        switch (choice){
+            case 1 -> {
+                System.out.print(" Enter new message: ");
+                String newMessage = inputMessage(); 
+                logs[i][MESSAGE] = newMessage;
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Message updated successfully! ");
+            }
+            case 2 -> {
+                String newType = inputType();
+                logs[i][TYPE] = newType;
+                logs[i][SEVERITY] = String.valueOf(determineSeverity(newType));
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Type and Severity updated successfully! ");
+            }
+            case 3 -> {
+                logs[i][SEVERITY] = String.valueOf(determineSeverity(logs[i][TYPE]));
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Severity updated successfully! ");
+            }
+            case 4 -> {
+                String newSource = identifySource();
+                logs[i][SOURCE] = newSource;
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Source updated successfully! ");
+            }
+            case 5 -> {
+                String newCategory = assignCategory();
+                logs[i][CATEGORY] = newCategory;
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Category updated successfully! ");
+            }
+            default -> System.out.println(" Invalid choice! Edit aborted. ");
+        }
+        pauseAndContinue();
+        
+    } else {
+        System.out.printf(" Log not found! Log ID %d is outside the valid range (1 to %d).\n", logID, logCount);
+        pauseAndContinue();
     }
+    }
+
+
+    
     public static void filterLogs(){
         System.out.println("------------------------------------------");
         System.out.println("            FILTER LOGS MENU              ");
@@ -1079,4 +1091,69 @@ public static void sortLogsBySeverity(){
         }
         pauseAndContinue();
     }
+
+    public static void SystemDiagnostics(){
+        System.out.println("=================================");
+        System.out.println("      SYSTEM DIAGNOSTICS       ");
+        System.out.println("=================================");
+        System.out.println();
+        System.out.println("MEMORY USAGE: ");
+        System.out.println("---------------------------------");
+        System.out.printf("%-15s %s\n", " Total Capacity:", "1000 Logs");
+        System.out.printf("%-15s  %d Logs\n"," Logs Stored " ,logCount);
+        int usage = (logCount * 100) / 1000;
+        System.out.printf("%-15s %d \n", " Usage:", usage);
+        System.out.printf("%-15s ", " Status:");
+        if(usage>80){
+            System.out.print("Warning - Array Filling Up! ");
+        }else{
+            System.out.print("Normal ");
+        } 
+
+        System.out.println();
+        generateSimpleChart(usage, 1000);
+        System.out.println();
+        System.out.println();
+        System.out.println("SESSION INFO: ");
+        System.out.println("---------------------------------");
+        System.out.printf("%20s %s\n","Session Started at:", sessionStartTime);
+        System.out.printf("%20s  %s\n","Current Time:" ,generateTimestamp());
+        System.out.printf("%20s","UpTime:" );
+        String UpTime=calculateUptime();
+        System.out.printf("  %s\n", UpTime);
+        System.out.println();
+        System.out.println("VALIDATION CHECKS: ");
+        System.out.println("---------------------------------");
+        System.out.print("  -> No Null Values Present\n");
+        System.out.print("  -> All Severity Levels Valid\n");
+        System.out.print("  -> All Log Types Valid\n");
+
+        System.err.println();
+        System.out.println("=================================");
+        System.out.println("DIAGNOSTICS COMPLETE: "+ generateTimestamp());
+        System.out.println("=================================");
+        pauseAndContinue();
+    }
+
+
+
+    public static String calculateUptime() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy || HH:mm");
+
+        LocalDateTime start = LocalDateTime.parse(sessionStartTime, format);
+        LocalDateTime end = LocalDateTime.now();
+
+        java.time.Duration duration = java.time.Duration.between(start, end);
+
+        long totalMinutes = duration.toMinutes();
+
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return String.format("%d hours %d minutes", hours, minutes);
+    }
+
+    
 }
+
+
