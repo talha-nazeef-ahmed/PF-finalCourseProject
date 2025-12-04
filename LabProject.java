@@ -99,9 +99,7 @@ public class LabProject {
                 case 5 -> { editExistingLogs();
                 }
                 case 6 -> showStatistics();
-                case 7 -> { System.out.println(">>> Trends - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 7 -> TrendAnalysis();
                 case 8 -> anomalyDetection();
                 case 9 -> sortLogsBySeverity();
                 case 10 -> filterLogs();
@@ -783,6 +781,89 @@ public class LabProject {
             System.out.print("░");
         }
     }
+
+    public static void TrendAnalysis(){
+        System.out.println("===============================================");
+        System.out.println("            TREND ANALYSIS MODULE             ");
+        System.out.println("===============================================");
+        System.out.println("Analysing logs for trends... ");
+        System.out.println();
+        System.out.println("LOGS TYPES TREND");
+        System.out.println("---------------------------------------");
+        System.out.print("Most Comon: " );
+        calculateMostCommon();
+        System.out.println("Least Comon: ");
+        System.out.println();
+        System.out.println("Severity Analysis: ");
+        System.out.println("---------------------------------------");
+        System.out.printf("%-20s %.1f\n", "Average Severity", calculateAvgSeverity());
+        System.out.printf("%-20s %d\n", "High-Risk Logs: ", calculateHighRiskLogs());
+        System.out.printf("%-20s %d\n", "Critical Logs:", calculateCriticalLogs());
+        System.out.println();
+        System.out.println("Risk Assesment: ");
+        System.out.println("---------------------------------------");
+        pauseAndContinue();
+    }
+
+    public static double calculateAvgSeverity(){
+        int totalSeverity = 0;
+        double avgSeverity;        
+        for (int i = 0; i < logCount; i++) {
+            totalSeverity += Integer.parseInt(logs[i][SEVERITY]);
+           }
+        avgSeverity = (double) totalSeverity / logCount;
+        return avgSeverity;
+    
+    }
+
+    public static int calculateHighRiskLogs(){
+        int highRiskCount = 0;
+        for (int i = 0; i < logCount; i++) {
+            int severity = Integer.parseInt(logs[i][SEVERITY]);
+            if (severity == 4) {
+                highRiskCount++;
+            }
+        }
+        return highRiskCount;
+    }
+    
+    public static int calculateCriticalLogs(){
+        int criticalCount = 0;
+        for (int i = 0; i < logCount; i++) {
+            int severity = Integer.parseInt(logs[i][SEVERITY]);
+            if (severity == 5) {
+                criticalCount++;
+            }
+        }
+        return criticalCount;
+    }
+
+    public static void calculateMostCommon(){
+        //int infoCount = 0, warningCount = 0, errorCount = 0, criticalCount = 0, debugCount = 0;
+        String Types[] = {"INFO", "WARNING", "ERROR", "CRITICAL", "DEBUG"};
+        int typeCounts[] = new int[5];
+        for (int i = 0; i < logCount; i++){
+            String CurrentType = logs[i][TYPE];
+            switch (CurrentType){
+                case "INFO" -> typeCounts[0]++;
+                case "WARNING" -> typeCounts[1]++;
+                case "ERROR" -> typeCounts[2]++;
+                case "CRITICAL" -> typeCounts[3]++;
+                case "DEBUG" -> typeCounts[4]++;
+            }
+            
+        }
+        int maxIndex = 0;
+        for (int i = 1; i < typeCounts.length; i++){
+            if (typeCounts[i] > typeCounts[maxIndex]){
+                maxIndex = i;
+            }
+        }
+        System.out.printf("%s (%d occurrences)\n", Types[maxIndex], typeCounts[maxIndex]);
+        
+
+    }
+
     public static void anomalyDetection(){
         while (true){
             System.out.println("Enter a choice for a scan\n1. Brute-force attack scan\n2. Suspicious activity scan\n0. Exit");
