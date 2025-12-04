@@ -83,7 +83,6 @@ public class LabProject {
             System.out.println("11. Export Logs");
             System.out.println("12. Import Logs");
             System.out.println("13. System Diagnostics");
-            System.out.println("14. Help & Documentation");
             System.out.println("0. Exit");
             System.out.println();
             int choice = getMenuChoice();
@@ -96,20 +95,15 @@ public class LabProject {
                 case 2 -> viewAllLogs();
                 case 3 -> searchByKeyword();
                 case 4 -> deleteLogs();
-                case 5 -> { editExistingLogs();
-                }
+                case 5 -> editExistingLogs();
                 case 6 -> showStatistics();
-                case 7 -> TrendAnalysis();
+                case 7 -> trendAnalysis();
                 case 8 -> anomalyDetection();
                 case 9 -> sortLogsBySeverity();
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
                 case 12 -> importLogs();
-                case 13 -> { SystemDiagnostics();
-                }
-                case 14 -> { System.out.println(">>> Help - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 13 -> systemDiagnostics();
                 default -> { System.out.println("ERROR: Invalid choice! Please Enter 0-15");
                     pauseAndContinue();
                 }
@@ -120,12 +114,12 @@ public class LabProject {
     public static int getMenuChoice(){
         int choice = -1;
         while (choice < 0){
-            System.out.print("Enter your choice (0-15): ");
+            System.out.print("Enter your choice (0-13): ");
             String userInput = input.nextLine();
             try {
                 choice = Integer.parseInt(userInput);
-                if (choice < 0 || choice > 15) {
-                    System.out.println("Please Enter a number between 0 and 15");
+                if (choice < 0 || choice > 13) {
+                    System.out.println("Please Enter a number between 0 and 13");
                     choice = -1;
                 }
             }
@@ -145,7 +139,7 @@ public class LabProject {
         System.out.println("==========================================");
         System.out.printf("Session Started: %s\n", sessionStartTime);
         System.out.printf("Session Ended: %s\n", sessionEndTime);
-        System.out.println("Duration: Coming soon...");
+        System.out.printf("Duration: %s\n", calculateUptime());
         System.out.println();
         System.out.printf("Logs in System: %d\n", logCount);
         System.out.println("------------------------------------------");
@@ -423,8 +417,9 @@ public class LabProject {
     int logIndex = logID - 1;
 
     if (logIndex >= 0 && logIndex < logCount) {
-        int i = logIndex; 
-        
+        int i;
+        i = logIndex;
+
         System.out.println(" Log Found! ");
         System.out.println("YOU ARE ABOUT TO EDIT THIS LOG:");
         formatLogEntry(i);
@@ -782,7 +777,7 @@ public class LabProject {
         }
     }
 
-    public static void TrendAnalysis(){
+    public static void trendAnalysis(){
         System.out.println("===============================================");
         System.out.println("            TREND ANALYSIS MODULE             ");
         System.out.println("===============================================");
@@ -790,9 +785,10 @@ public class LabProject {
         System.out.println();
         System.out.println("LOGS TYPES TREND");
         System.out.println("---------------------------------------");
-        System.out.print("Most Comon: " );
+        System.out.print("Most Common: " );
         calculateMostCommon();
-        System.out.println("Least Comon: ");
+        System.out.print("Least Common: ");
+        calculateLeastCommon();
         System.out.println();
         System.out.println("Severity Analysis: ");
         System.out.println("---------------------------------------");
@@ -800,12 +796,18 @@ public class LabProject {
         System.out.printf("%-20s %d\n", "High-Risk Logs: ", calculateHighRiskLogs());
         System.out.printf("%-20s %d\n", "Critical Logs:", calculateCriticalLogs());
         System.out.println();
-        System.out.println("Risk Assesment: ");
+        System.out.println("Risk Assessment: ");
         System.out.println("---------------------------------------");
+        assessRisk();
+        System.out.println("===============================================");
+        System.out. printf("Analysis completed: %s\n", generateTimestamp());
+        System.out. println("===============================================");
         pauseAndContinue();
     }
 
     public static double calculateAvgSeverity(){
+        if (logCount == 0)
+            return 0.0;
         int totalSeverity = 0;
         double avgSeverity;        
         for (int i = 0; i < logCount; i++) {
@@ -840,8 +842,8 @@ public class LabProject {
 
     public static void calculateMostCommon(){
         //int infoCount = 0, warningCount = 0, errorCount = 0, criticalCount = 0, debugCount = 0;
-        String Types[] = {"INFO", "WARNING", "ERROR", "CRITICAL", "DEBUG"};
-        int typeCounts[] = new int[5];
+        String[] Types = {"INFO", "WARNING", "ERROR", "CRITICAL", "DEBUG"};
+        int[] typeCounts = new int[5];
         for (int i = 0; i < logCount; i++){
             String CurrentType = logs[i][TYPE];
             switch (CurrentType){
@@ -862,6 +864,60 @@ public class LabProject {
         System.out.printf("%s (%d occurrences)\n", Types[maxIndex], typeCounts[maxIndex]);
         
 
+    }
+    public static void calculateLeastCommon(){
+        String[] Types = {"INFO", "WARNING", "ERROR", "CRITICAL", "DEBUG"};
+        int[] typeCounts = new int[5];
+
+        for (int i = 0; i < logCount; i++){
+            String CurrentType = logs[i][TYPE];
+            switch (CurrentType){
+                case "INFO" -> typeCounts[0]++;
+                case "WARNING" -> typeCounts[1]++;
+                case "ERROR" -> typeCounts[2]++;
+                case "CRITICAL" -> typeCounts[3]++;
+                case "DEBUG" -> typeCounts[4]++;
+            }
+        }
+
+        int minIndex = 0;
+        for (int i = 1; i < typeCounts.length; i++){
+            if (typeCounts[i] < typeCounts[minIndex]){
+                minIndex = i;
+            }
+        }
+        System.out.printf("%s (%d occurrences)\n", Types[minIndex], typeCounts[minIndex]);
+    }
+    public static void assessRisk(){
+        int highRisk = calculateHighRiskLogs();
+        int critical = calculateCriticalLogs();
+        int totalRisk = highRisk + critical;
+
+        double riskPercentage = (double)(totalRisk * 100) / logCount;
+
+        System.out. printf("Total High-Risk Events: %d (%.1f%%)\n", totalRisk, riskPercentage);
+        System.out.println();
+
+        if(riskPercentage >= 30){
+            System. out.println("Status: CRITICAL RISK");
+            System.out.println("Recommendation: Immediate attention required!");
+            System.out.println("Action: Review all CRITICAL and ERROR logs now.");
+        }
+        else if(riskPercentage >= 15){
+            System. out.println("Status: ELEVATED RISK");
+            System.out.println("Recommendation: Review high-severity logs.");
+            System.out.println("Action: Investigate authentication failures.");
+        }
+        else if(riskPercentage >= 5){
+            System. out.println("Status: MODERATE RISK");
+            System.out.println("Recommendation: Monitor system closely.");
+            System. out.println("Action: Schedule routine log review.");
+        }
+        else{
+            System.out. println("Status: LOW RISK");
+            System.out.println("Recommendation: System appears healthy.");
+            System. out.println("Action: Continue normal monitoring.");
+        }
     }
 
     public static void anomalyDetection(){
@@ -1094,7 +1150,7 @@ public static void sortLogsBySeverity(){
             if(!filename.endsWith(".txt")){
                 filename = filename + ".txt";
             }
-            File file = new File("C:\\Users\\Talha Nazeef Ahmed\\Desktop\\Github\\PF-finalCourseProject\\" + filename);
+            File file = new File(filename);
             Scanner read = new Scanner(file);
             while (read.hasNext()){
                 String line = read.nextLine();
@@ -1173,18 +1229,18 @@ public static void sortLogsBySeverity(){
         pauseAndContinue();
     }
 
-    public static void SystemDiagnostics(){
+    public static void systemDiagnostics(){
         System.out.println("=================================");
         System.out.println("      SYSTEM DIAGNOSTICS       ");
         System.out.println("=================================");
         System.out.println();
         System.out.println("MEMORY USAGE: ");
         System.out.println("---------------------------------");
-        System.out.printf("%-15s %s\n", " Total Capacity:", "1000 Logs");
-        System.out.printf("%-15s  %d Logs\n"," Logs Stored " ,logCount);
+        System.out.printf("%-20s %s\n", "Total Capacity:", "1000 Logs");
+        System.out.printf("%-20s %d Logs\n","Logs Stored:" ,logCount);
         int usage = (logCount * 100) / 1000;
-        System.out.printf("%-15s %d \n", " Usage:", usage);
-        System.out.printf("%-15s ", " Status:");
+        System.out.printf("%-20s %d \n", "Usage:", usage);
+        System.out.printf("%-20s ", "Status:");
         if(usage>80){
             System.out.print("Warning - Array Filling Up! ");
         }else{
@@ -1192,16 +1248,16 @@ public static void sortLogsBySeverity(){
         } 
 
         System.out.println();
-        generateSimpleChart(usage, 1000);
+        generateSimpleChart(logCount, INITIAL_CAPACITY);
         System.out.println();
         System.out.println();
         System.out.println("SESSION INFO: ");
         System.out.println("---------------------------------");
-        System.out.printf("%20s %s\n","Session Started at:", sessionStartTime);
-        System.out.printf("%20s  %s\n","Current Time:" ,generateTimestamp());
-        System.out.printf("%20s","UpTime:" );
+        System.out.printf("%-20s %s\n","Session Started at:", sessionStartTime);
+        System.out.printf("%-20s %s\n","Current Time:" ,generateTimestamp());
+        System.out.printf("%-20s","UpTime:" );
         String UpTime=calculateUptime();
-        System.out.printf("  %s\n", UpTime);
+        System.out.printf(" %s\n", UpTime);
         System.out.println();
         System.out.println("VALIDATION CHECKS: ");
         System.out.println("---------------------------------");
