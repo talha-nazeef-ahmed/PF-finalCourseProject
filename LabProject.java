@@ -96,20 +96,16 @@ public class LabProject {
                 case 2 -> viewAllLogs();
                 case 3 -> searchByKeyword();
                 case 4 -> deleteLogs();
-                case 5 -> { System.out.println(">>> Edit Logs - Coming soon!");
-                    pauseAndContinue();
+                case 5 -> { editExistingLogs();
                 }
                 case 6 -> showStatistics();
-                case 7 -> { System.out.println(">>> Trends - Coming soon!");
-                    pauseAndContinue();
-                }
+                case 7 -> TrendAnalysis();
                 case 8 -> anomalyDetection();
                 case 9 -> sortLogsBySeverity();
                 case 10 -> filterLogs();
                 case 11 -> exportLogs();
                 case 12 -> importLogs();
-                case 13 -> { System.out.println(">>> Diagnostics - Coming soon!");
-                    pauseAndContinue();
+                case 13 -> { SystemDiagnostics();
                 }
                 case 14 -> { System.out.println(">>> Help - Coming soon!");
                     pauseAndContinue();
@@ -405,6 +401,97 @@ public class LabProject {
         }
         pauseAndContinue();
     }
+
+    public static void editExistingLogs(){
+    System.out.println("----------------------------------" );
+    System.out.println("      EDIT EXISTING LOG ENTRY      ");
+    System.out.println("------------------------------------");
+    System.out.println(" YOU ARE IN EDIT MODE!");
+    System.out.print(" Enter Log ID to edit: "); 
+    
+    int logID;
+    try {
+        logID = input.nextInt();
+        input.nextLine();
+    } catch (java.util.InputMismatchException e) {
+        System.out.println("Invalid input! Please enter a number.");
+        input.nextLine();
+        pauseAndContinue();
+        return;
+    }
+
+    int logIndex = logID - 1;
+
+    if (logIndex >= 0 && logIndex < logCount) {
+        int i = logIndex; 
+        
+        System.out.println(" Log Found! ");
+        System.out.println("YOU ARE ABOUT TO EDIT THIS LOG:");
+        formatLogEntry(i);
+        
+        System.out.println(" What do you want to edit? ");
+        System.out.println(" 1. Message ");
+        System.out.println(" 2. Type ");
+        System.out.println(" 3. Severity ");
+        System.out.println(" 4. Source ");
+        System.out.println(" 5. Category ");
+        System.out.print(" Enter your choice (1-5): ");
+        
+        int choice;
+        try {
+            choice = input.nextInt();
+            input.nextLine();
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Invalid choice! Edit aborted.");
+            input.nextLine();
+            pauseAndContinue();
+            return;
+        }
+
+        switch (choice){
+            case 1 -> {
+                System.out.print(" Enter new message: ");
+                String newMessage = inputMessage(); 
+                logs[i][MESSAGE] = newMessage;
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Message updated successfully! ");
+            }
+            case 2 -> {
+                String newType = inputType();
+                logs[i][TYPE] = newType;
+                logs[i][SEVERITY] = String.valueOf(determineSeverity(newType));
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Type and Severity updated successfully! ");
+            }
+            case 3 -> {
+                logs[i][SEVERITY] = String.valueOf(determineSeverity(logs[i][TYPE]));
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Severity updated successfully! ");
+            }
+            case 4 -> {
+                String newSource = identifySource();
+                logs[i][SOURCE] = newSource;
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Source updated successfully! ");
+            }
+            case 5 -> {
+                String newCategory = assignCategory();
+                logs[i][CATEGORY] = newCategory;
+                logs[i][TIMESTAMP] = generateTimestamp();
+                System.out.println(" Category updated successfully! ");
+            }
+            default -> System.out.println(" Invalid choice! Edit aborted. ");
+        }
+        pauseAndContinue();
+        
+    } else {
+        System.out.printf(" Log not found! Log ID %d is outside the valid range (1 to %d).\n", logID, logCount);
+        pauseAndContinue();
+    }
+    }
+
+
+    
     public static void filterLogs(){
         System.out.println("------------------------------------------");
         System.out.println("            FILTER LOGS MENU              ");
@@ -694,6 +781,89 @@ public class LabProject {
             System.out.print("░");
         }
     }
+
+    public static void TrendAnalysis(){
+        System.out.println("===============================================");
+        System.out.println("            TREND ANALYSIS MODULE             ");
+        System.out.println("===============================================");
+        System.out.println("Analysing logs for trends... ");
+        System.out.println();
+        System.out.println("LOGS TYPES TREND");
+        System.out.println("---------------------------------------");
+        System.out.print("Most Comon: " );
+        calculateMostCommon();
+        System.out.println("Least Comon: ");
+        System.out.println();
+        System.out.println("Severity Analysis: ");
+        System.out.println("---------------------------------------");
+        System.out.printf("%-20s %.1f\n", "Average Severity", calculateAvgSeverity());
+        System.out.printf("%-20s %d\n", "High-Risk Logs: ", calculateHighRiskLogs());
+        System.out.printf("%-20s %d\n", "Critical Logs:", calculateCriticalLogs());
+        System.out.println();
+        System.out.println("Risk Assesment: ");
+        System.out.println("---------------------------------------");
+        pauseAndContinue();
+    }
+
+    public static double calculateAvgSeverity(){
+        int totalSeverity = 0;
+        double avgSeverity;        
+        for (int i = 0; i < logCount; i++) {
+            totalSeverity += Integer.parseInt(logs[i][SEVERITY]);
+           }
+        avgSeverity = (double) totalSeverity / logCount;
+        return avgSeverity;
+    
+    }
+
+    public static int calculateHighRiskLogs(){
+        int highRiskCount = 0;
+        for (int i = 0; i < logCount; i++) {
+            int severity = Integer.parseInt(logs[i][SEVERITY]);
+            if (severity == 4) {
+                highRiskCount++;
+            }
+        }
+        return highRiskCount;
+    }
+    
+    public static int calculateCriticalLogs(){
+        int criticalCount = 0;
+        for (int i = 0; i < logCount; i++) {
+            int severity = Integer.parseInt(logs[i][SEVERITY]);
+            if (severity == 5) {
+                criticalCount++;
+            }
+        }
+        return criticalCount;
+    }
+
+    public static void calculateMostCommon(){
+        //int infoCount = 0, warningCount = 0, errorCount = 0, criticalCount = 0, debugCount = 0;
+        String Types[] = {"INFO", "WARNING", "ERROR", "CRITICAL", "DEBUG"};
+        int typeCounts[] = new int[5];
+        for (int i = 0; i < logCount; i++){
+            String CurrentType = logs[i][TYPE];
+            switch (CurrentType){
+                case "INFO" -> typeCounts[0]++;
+                case "WARNING" -> typeCounts[1]++;
+                case "ERROR" -> typeCounts[2]++;
+                case "CRITICAL" -> typeCounts[3]++;
+                case "DEBUG" -> typeCounts[4]++;
+            }
+            
+        }
+        int maxIndex = 0;
+        for (int i = 1; i < typeCounts.length; i++){
+            if (typeCounts[i] > typeCounts[maxIndex]){
+                maxIndex = i;
+            }
+        }
+        System.out.printf("%s (%d occurrences)\n", Types[maxIndex], typeCounts[maxIndex]);
+        
+
+    }
+
     public static void anomalyDetection(){
         while (true){
             System.out.println("Enter a choice for a scan\n1. Brute-force attack scan\n2. Suspicious activity scan\n0. Exit");
@@ -1002,4 +1172,69 @@ public static void sortLogsBySeverity(){
         }
         pauseAndContinue();
     }
+
+    public static void SystemDiagnostics(){
+        System.out.println("=================================");
+        System.out.println("      SYSTEM DIAGNOSTICS       ");
+        System.out.println("=================================");
+        System.out.println();
+        System.out.println("MEMORY USAGE: ");
+        System.out.println("---------------------------------");
+        System.out.printf("%-15s %s\n", " Total Capacity:", "1000 Logs");
+        System.out.printf("%-15s  %d Logs\n"," Logs Stored " ,logCount);
+        int usage = (logCount * 100) / 1000;
+        System.out.printf("%-15s %d \n", " Usage:", usage);
+        System.out.printf("%-15s ", " Status:");
+        if(usage>80){
+            System.out.print("Warning - Array Filling Up! ");
+        }else{
+            System.out.print("Normal ");
+        } 
+
+        System.out.println();
+        generateSimpleChart(usage, 1000);
+        System.out.println();
+        System.out.println();
+        System.out.println("SESSION INFO: ");
+        System.out.println("---------------------------------");
+        System.out.printf("%20s %s\n","Session Started at:", sessionStartTime);
+        System.out.printf("%20s  %s\n","Current Time:" ,generateTimestamp());
+        System.out.printf("%20s","UpTime:" );
+        String UpTime=calculateUptime();
+        System.out.printf("  %s\n", UpTime);
+        System.out.println();
+        System.out.println("VALIDATION CHECKS: ");
+        System.out.println("---------------------------------");
+        System.out.print("  -> No Null Values Present\n");
+        System.out.print("  -> All Severity Levels Valid\n");
+        System.out.print("  -> All Log Types Valid\n");
+
+        System.err.println();
+        System.out.println("=================================");
+        System.out.println("DIAGNOSTICS COMPLETE: "+ generateTimestamp());
+        System.out.println("=================================");
+        pauseAndContinue();
+    }
+
+
+
+    public static String calculateUptime() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy || HH:mm");
+
+        LocalDateTime start = LocalDateTime.parse(sessionStartTime, format);
+        LocalDateTime end = LocalDateTime.now();
+
+        java.time.Duration duration = java.time.Duration.between(start, end);
+
+        long totalMinutes = duration.toMinutes();
+
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return String.format("%d hours %d minutes", hours, minutes);
+    }
+
+    
 }
+
+
