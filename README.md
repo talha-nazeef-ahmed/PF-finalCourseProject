@@ -1,4 +1,4 @@
-Security Information and Event Management (SIEM) — Semester 1 Prototype
+Security Information and Event Management (SIEM) [Semester 1 Prototype]
 This SIEM (Security Information and Event Management) project was developed as part of my university coursework. It enables management, analysis, and detection of security events using log data
 Main Features (Semester 1):
 - Add/View/Edit/Delete logs
